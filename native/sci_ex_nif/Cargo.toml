@@ -1,0 +1,13 @@
+[package]
+name = "sci_ex_nif"
+version = "0.1.0"
+authors = []
+edition = "2021"
+
+[lib]
+name = "sci_ex_nif"
+crate-type = ["cdylib"]
+
+[dependencies]
+rustler = "0.36.1"
+ndarray = "0.16.1"
