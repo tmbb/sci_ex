@@ -9,5 +9,9 @@ name = "sci_ex_nif"
 crate-type = ["cdylib"]
 
 [dependencies]
+libm = "0.2.11"
 rustler = "0.36.1"
 ndarray = "0.16.1"
+rand_chacha = "0.3.1"
+rand = { version = "0.8", features = ["alloc"] }
+statrs = { version = "0.18.0", features = ["rand"] }

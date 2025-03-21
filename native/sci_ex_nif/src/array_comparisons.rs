@@ -1,0 +1,339 @@
+use ndarray::{Array1, Array2, Array3, Array4, Array5, Array6};
+use crate::datatypes::*;
+
+
+#[rustler::nif]
+pub fn float64_array1_equal(ex_array_a: ExFloat64Array1, ex_array_b: ExFloat64Array1) -> bool {
+    let arr_a: &Array1<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array1<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i == b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array1_not_equal(ex_array_a: ExFloat64Array1, ex_array_b: ExFloat64Array1) -> bool {
+    let arr_a: &Array1<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array1<f64> = &ex_array_b.resource.0;
+    
+    !arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i == b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array1_all_not_equal(ex_array_a: ExFloat64Array1, ex_array_b: ExFloat64Array1) -> bool {
+    let arr_a: &Array1<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array1<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i != b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array1_all_less_than(ex_array_a: ExFloat64Array1, ex_array_b: ExFloat64Array1) -> bool {
+    let arr_a: &Array1<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array1<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i < b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array1_all_less_than_or_equal(ex_array_a: ExFloat64Array1, ex_array_b: ExFloat64Array1) -> bool {
+    let arr_a: &Array1<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array1<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i <= b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array1_all_greater_than(ex_array_a: ExFloat64Array1, ex_array_b: ExFloat64Array1) -> bool {
+    let arr_a: &Array1<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array1<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i > b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array1_all_greater_than_or_equal(ex_array_a: ExFloat64Array1, ex_array_b: ExFloat64Array1) -> bool {
+    let arr_a: &Array1<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array1<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i <= b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array2_equal(ex_array_a: ExFloat64Array2, ex_array_b: ExFloat64Array2) -> bool {
+    let arr_a: &Array2<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array2<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i == b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array2_not_equal(ex_array_a: ExFloat64Array2, ex_array_b: ExFloat64Array2) -> bool {
+    let arr_a: &Array2<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array2<f64> = &ex_array_b.resource.0;
+    
+    !arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i == b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array2_all_not_equal(ex_array_a: ExFloat64Array2, ex_array_b: ExFloat64Array2) -> bool {
+    let arr_a: &Array2<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array2<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i != b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array2_all_less_than(ex_array_a: ExFloat64Array2, ex_array_b: ExFloat64Array2) -> bool {
+    let arr_a: &Array2<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array2<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i < b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array2_all_less_than_or_equal(ex_array_a: ExFloat64Array2, ex_array_b: ExFloat64Array2) -> bool {
+    let arr_a: &Array2<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array2<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i <= b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array2_all_greater_than(ex_array_a: ExFloat64Array2, ex_array_b: ExFloat64Array2) -> bool {
+    let arr_a: &Array2<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array2<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i > b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array2_all_greater_than_or_equal(ex_array_a: ExFloat64Array2, ex_array_b: ExFloat64Array2) -> bool {
+    let arr_a: &Array2<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array2<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i <= b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array3_equal(ex_array_a: ExFloat64Array3, ex_array_b: ExFloat64Array3) -> bool {
+    let arr_a: &Array3<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array3<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i == b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array3_not_equal(ex_array_a: ExFloat64Array3, ex_array_b: ExFloat64Array3) -> bool {
+    let arr_a: &Array3<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array3<f64> = &ex_array_b.resource.0;
+    
+    !arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i == b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array3_all_not_equal(ex_array_a: ExFloat64Array3, ex_array_b: ExFloat64Array3) -> bool {
+    let arr_a: &Array3<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array3<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i != b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array3_all_less_than(ex_array_a: ExFloat64Array3, ex_array_b: ExFloat64Array3) -> bool {
+    let arr_a: &Array3<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array3<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i < b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array3_all_less_than_or_equal(ex_array_a: ExFloat64Array3, ex_array_b: ExFloat64Array3) -> bool {
+    let arr_a: &Array3<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array3<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i <= b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array3_all_greater_than(ex_array_a: ExFloat64Array3, ex_array_b: ExFloat64Array3) -> bool {
+    let arr_a: &Array3<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array3<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i > b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array3_all_greater_than_or_equal(ex_array_a: ExFloat64Array3, ex_array_b: ExFloat64Array3) -> bool {
+    let arr_a: &Array3<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array3<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i <= b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array4_equal(ex_array_a: ExFloat64Array4, ex_array_b: ExFloat64Array4) -> bool {
+    let arr_a: &Array4<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array4<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i == b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array4_not_equal(ex_array_a: ExFloat64Array4, ex_array_b: ExFloat64Array4) -> bool {
+    let arr_a: &Array4<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array4<f64> = &ex_array_b.resource.0;
+    
+    !arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i == b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array4_all_not_equal(ex_array_a: ExFloat64Array4, ex_array_b: ExFloat64Array4) -> bool {
+    let arr_a: &Array4<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array4<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i != b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array4_all_less_than(ex_array_a: ExFloat64Array4, ex_array_b: ExFloat64Array4) -> bool {
+    let arr_a: &Array4<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array4<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i < b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array4_all_less_than_or_equal(ex_array_a: ExFloat64Array4, ex_array_b: ExFloat64Array4) -> bool {
+    let arr_a: &Array4<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array4<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i <= b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array4_all_greater_than(ex_array_a: ExFloat64Array4, ex_array_b: ExFloat64Array4) -> bool {
+    let arr_a: &Array4<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array4<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i > b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array4_all_greater_than_or_equal(ex_array_a: ExFloat64Array4, ex_array_b: ExFloat64Array4) -> bool {
+    let arr_a: &Array4<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array4<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i <= b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array5_equal(ex_array_a: ExFloat64Array5, ex_array_b: ExFloat64Array5) -> bool {
+    let arr_a: &Array5<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array5<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i == b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array5_not_equal(ex_array_a: ExFloat64Array5, ex_array_b: ExFloat64Array5) -> bool {
+    let arr_a: &Array5<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array5<f64> = &ex_array_b.resource.0;
+    
+    !arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i == b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array5_all_not_equal(ex_array_a: ExFloat64Array5, ex_array_b: ExFloat64Array5) -> bool {
+    let arr_a: &Array5<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array5<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i != b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array5_all_less_than(ex_array_a: ExFloat64Array5, ex_array_b: ExFloat64Array5) -> bool {
+    let arr_a: &Array5<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array5<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i < b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array5_all_less_than_or_equal(ex_array_a: ExFloat64Array5, ex_array_b: ExFloat64Array5) -> bool {
+    let arr_a: &Array5<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array5<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i <= b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array5_all_greater_than(ex_array_a: ExFloat64Array5, ex_array_b: ExFloat64Array5) -> bool {
+    let arr_a: &Array5<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array5<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i > b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array5_all_greater_than_or_equal(ex_array_a: ExFloat64Array5, ex_array_b: ExFloat64Array5) -> bool {
+    let arr_a: &Array5<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array5<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i <= b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array6_equal(ex_array_a: ExFloat64Array6, ex_array_b: ExFloat64Array6) -> bool {
+    let arr_a: &Array6<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array6<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i == b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array6_not_equal(ex_array_a: ExFloat64Array6, ex_array_b: ExFloat64Array6) -> bool {
+    let arr_a: &Array6<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array6<f64> = &ex_array_b.resource.0;
+    
+    !arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i == b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array6_all_not_equal(ex_array_a: ExFloat64Array6, ex_array_b: ExFloat64Array6) -> bool {
+    let arr_a: &Array6<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array6<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i != b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array6_all_less_than(ex_array_a: ExFloat64Array6, ex_array_b: ExFloat64Array6) -> bool {
+    let arr_a: &Array6<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array6<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i < b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array6_all_less_than_or_equal(ex_array_a: ExFloat64Array6, ex_array_b: ExFloat64Array6) -> bool {
+    let arr_a: &Array6<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array6<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i <= b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array6_all_greater_than(ex_array_a: ExFloat64Array6, ex_array_b: ExFloat64Array6) -> bool {
+    let arr_a: &Array6<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array6<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i > b_i)
+}
+
+#[rustler::nif]
+pub fn float64_array6_all_greater_than_or_equal(ex_array_a: ExFloat64Array6, ex_array_b: ExFloat64Array6) -> bool {
+    let arr_a: &Array6<f64> = &ex_array_a.resource.0;
+    let arr_b: &Array6<f64> = &ex_array_b.resource.0;
+    
+    arr_a.into_iter().zip(arr_b.into_iter()).all(|(a_i, b_i)| a_i <= b_i)
+}

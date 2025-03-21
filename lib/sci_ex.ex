@@ -3,37 +3,215 @@ defmodule SciEx do
   Documentation for `SciEx`.
   """
 
-  alias SciEx.SciExNif
+  import SciEx.ArrayHelpers
 
-  alias SciEx.{Array1, Array2}
+  @doc """
+  TODO
+  """
+  def_f64(acos(array))
 
-  def zeros(dims, opts \\ [])
+  @doc """
+  TODO
+  """
+  def_f64(acosh(array))
 
-  def zeros(n, opts) when is_integer(n) and n >= 0 do
-    type = Keyword.get(opts, :type, :f64)
+  @doc """
+  TODO
+  """
+  def_f64(asin(array))
 
-    case type do
-      :f64 -> Array1.zeros(n)
-    end
-  end
+  @doc """
+  TODO
+  """
+  def_f64(asinh(array))
 
-  def zeros({n1, n2}, opts)
-      when is_integer(n1) and
-           is_integer(n2) and
-           n1 >= 0 and
-           n2 >= 0 do
-    type = Keyword.get(opts, :type, :f64)
+  @doc """
+  TODO
+  """
+  def_f64(atan(array))
 
-    case type do
-      :f64 -> Array2.zeros(n1, n2)
-    end
-  end
+  @doc """
+  TODO
+  """
+  def_f64(atan2(array, other))
 
+  @doc """
+  TODO
+  """
+  def_f64(atanh(array))
 
-  def cos(array) do
-    case array do
-      %Array1{} -> SciExNif.array1_cos(array)
-      %Array2{} -> SciExNif.array2_cos(array)
-    end
-  end
+  @doc """
+  TODO
+  """
+  def_f64(cbrt(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(ceil(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(cos(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(cosh(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(div_euclid(array, rhs))
+
+  @doc """
+  TODO
+  """
+  def_f64(erf(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(erfc(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(exp(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(exp2(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(exp_m1(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(floor(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(fract(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(hypot(array, other))
+
+  @doc """
+  TODO
+  """
+  def_f64(j0(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(j1(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(lgamma(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(ln(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(ln_1p(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(log(array, base))
+
+  @doc """
+  TODO
+  """
+  def_f64(log10(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(log2(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(mul_add(array, a, b))
+
+  @doc """
+  TODO
+  """
+  def_f64(powf(array, n))
+
+  @doc """
+  TODO
+  """
+  def_f64(powi(array, n))
+
+  @doc """
+  TODO
+  """
+  def_f64(rem_euclid(array, rhs))
+
+  @doc """
+  TODO
+  """
+  def_f64(round(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(round_ties_even(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(sin(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(sinh(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(sqrt(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(tan(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(tanh(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(trunc(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(y0(array))
+
+  @doc """
+  TODO
+  """
+  def_f64(y1(array))
 end
