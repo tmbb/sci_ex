@@ -22,3 +22,20 @@ pub fn <%= function.sci_ex_nif_name %>(ex_array: <%= function.arg_type %>, <%= t
     <%= function.result_type %>::new(result)
 }
 <% end %><% end %><% end %>
+
+#[rustler::nif]
+pub fn float64_add_array1_array1(a: ExFloat64Array1, b: ExFloat64Array1) -> ExFloat64Array1 {
+  a + b
+}
+
+#[rustler::nif]
+pub fn float64_add_array1_f64(a: ExFloat64Array1, b: f64) -> ExFloat64Array1 {
+  a + b
+}
+
+#[rustler::nif]
+pub fn float64_add_f64_array1(a: f64, b: ExFloat64Array1) -> ExFloat64Array1 {
+  a + b
+}
+
+

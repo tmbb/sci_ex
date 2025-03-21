@@ -1,6 +1,42 @@
 defmodule SciEx.ArrayHelpers do
   @moduledoc false
 
+  def to_float(x) when is_float(x), do: x
+  def to_float(x) when is_integer(x), do: 1.0 * x
+
+  defmacro def_vectorized_bin_op_f64({op, meta, [a, b]} = call, ex_op, rs_op) do
+    quote do
+      def unquote(call) do
+        unquote(ex_op)(unquote(a), unquote(b))
+      end
+
+      def unquote(ex_op)(unquote(a), unquote(b)) do
+        case {unquote(a), unquote(b)} do
+          {%SciEx.Float64.Array1{}, %SciEx.Float64.Array1{}} ->
+            SciEx.SciExNif.unquote(:"float64_#{rs_op}_array1_array1")(
+              unquote(a),
+              unquote(b)
+            )
+
+          {%SciEx.Float64.Array1{}, number} when is_number(number) ->
+            SciEx.SciExNif.unquote(:"float64_#{rs_op}_array1_f64")(
+              unquote(a),
+              SciEx.ArrayHelpers.to_float(number)
+            )
+
+          {number, %SciEx.Float64.Array1{}} when is_number(number) ->
+            SciEx.SciExNif.unquote(:"float64_#{rs_op}_f64_array1")(
+              unquote(a),
+              SciEx.ArrayHelpers.to_float(number)
+            )
+
+          {number1, number2} when is_number(number1) and is_number(number2) ->
+            apply(Kernel, unquote(op), [unquote(a), unquote(b)])
+        end
+      end
+    end
+  end
+
   @doc """
   Define a function that takes array of 64-bit floats as the
   first argument for 1D, 2D, ..., 6D arrays by calling the

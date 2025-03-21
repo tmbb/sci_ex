@@ -400,5 +400,9 @@ defmodule SciEx.SciExNif do
   def float64_array6_ones(_n1, _n2, _n3, _n4, _n5, _n6), do: err()
   # %% END:GENERATED:f64-array-builders %%
 
+  def float64_add_array1_array1(_a, _b), do: err()
+  def float64_add_array1_f64(_a, _b), do: err()
+  def float64_add_f64_array1(_a, _b), do: err()
+
   defp err(), do: :erlang.nif_error(:nif_not_loaded)
 end

@@ -5,6 +5,8 @@ defmodule SciEx do
 
   import SciEx.ArrayHelpers
 
+  def_vectorized_bin_op_f64(a + b, :add, :add)
+
   @doc """
   TODO
   """
