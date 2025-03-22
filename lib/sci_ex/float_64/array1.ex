@@ -20,7 +20,7 @@ defmodule SciEx.Float64.Array1 do
   @doc """
   Creates an array os ones (`1.0`) with the given dimensions.
   """
-  def ones(n), do: SciExNif.float64_array1_zeros(n)
+  def ones(n), do: SciExNif.float64_array1_ones(n)
 
   defimpl Inspect do
     alias Inspect.Algebra, as: IAlgebra

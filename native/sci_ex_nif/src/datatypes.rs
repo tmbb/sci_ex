@@ -68,3 +68,46 @@ pub fn float64_array6_inspect(ex_array6: ExFloat64Array6) -> String {
     let array6: &Array6<f64> = &ex_array6.resource.0;
     format!("{:?}", &array6)
 }
+
+elixirize!(Array1, f32, "SciEx.Float32.Array1", ExFloat32Array1Ref, ExFloat32Array1);
+elixirize!(Array2, f32, "SciEx.Float32.Array2", ExFloat32Array2Ref, ExFloat32Array2);
+elixirize!(Array3, f32, "SciEx.Float32.Array3", ExFloat32Array3Ref, ExFloat32Array3);
+elixirize!(Array4, f32, "SciEx.Float32.Array4", ExFloat32Array4Ref, ExFloat32Array4);
+elixirize!(Array5, f32, "SciEx.Float32.Array5", ExFloat32Array5Ref, ExFloat32Array5);
+elixirize!(Array6, f32, "SciEx.Float32.Array6", ExFloat32Array6Ref, ExFloat32Array6);
+
+#[rustler::nif]
+pub fn float32_array1_inspect(ex_array1: ExFloat32Array1) -> String {
+    let array1: &Array1<f32> = &ex_array1.resource.0;
+    format!("{:?}", &array1)
+}
+
+#[rustler::nif]
+pub fn float32_array2_inspect(ex_array2: ExFloat32Array2) -> String {
+    let array2: &Array2<f32> = &ex_array2.resource.0;
+    format!("{:?}", &array2)
+}
+
+#[rustler::nif]
+pub fn float32_array3_inspect(ex_array3: ExFloat32Array3) -> String {
+    let array3: &Array3<f32> = &ex_array3.resource.0;
+    format!("{:?}", &array3)
+}
+
+#[rustler::nif]
+pub fn float32_array4_inspect(ex_array4: ExFloat32Array4) -> String {
+    let array4: &Array4<f32> = &ex_array4.resource.0;
+    format!("{:?}", &array4)
+}
+
+#[rustler::nif]
+pub fn float32_array5_inspect(ex_array5: ExFloat32Array5) -> String {
+    let array5: &Array5<f32> = &ex_array5.resource.0;
+    format!("{:?}", &array5)
+}
+
+#[rustler::nif]
+pub fn float32_array6_inspect(ex_array6: ExFloat32Array6) -> String {
+    let array6: &Array6<f32> = &ex_array6.resource.0;
+    format!("{:?}", &array6)
+}

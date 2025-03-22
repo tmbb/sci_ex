@@ -69,33 +69,29 @@ defmodule SciEx.RustGenerator do
       :sci_ex_nif_name,
       :rs_module,
       :rs_function,
-      :arg_type,
       :args,
-      :result_type,
-      :element_type,
+      :nr_of_bits,
       :nr_of_dimensions
     ]
 
-    def type_to_rust_prefix("f64"), do: "float64"
-
-    def new(nr_of_dimensions, type, module, name, args)
+    def new(nr_of_dimensions, nr_of_bits, module, name, args)
           when is_integer(nr_of_dimensions) and
-               is_binary(type) and
+               is_integer(nr_of_bits) and
                is_binary(module) and
-               is_binary(name) do
+               (is_binary(name) or is_tuple(name)) do
 
-      underscore_prefix = type_to_rust_prefix(type)
-      camel_case_prefix = Macro.camelize(underscore_prefix)
-      wrapper_type = "Ex#{camel_case_prefix}Array#{nr_of_dimensions}"
+      {ex_name, rs_name} =
+        case name do
+          {ex, rs} -> {ex, rs}
+          other -> {other, other}
+        end
 
       %__MODULE__{
-        sci_ex_nif_name: "#{underscore_prefix}_array#{nr_of_dimensions}_#{name}",
+        sci_ex_nif_name: "float#{nr_of_bits}_#{ex_name}_array#{nr_of_dimensions}",
         rs_module: module,
-        rs_function: name,
+        rs_function: rs_name,
         args: args,
-        element_type: to_string(type),
-        arg_type: wrapper_type,
-        result_type: wrapper_type,
+        nr_of_bits: nr_of_bits,
         nr_of_dimensions: nr_of_dimensions
       }
     end
@@ -125,7 +121,7 @@ defmodule SciEx.RustGenerator do
     :def,
     :array_comparisons_rs,
     "priv/rust_generator/templates/array_comparisons.rs",
-    []
+    [:assigns]
   )
 
   @external_resource "priv/rust_generator/templates/array_builders.rs"
@@ -143,6 +139,15 @@ defmodule SciEx.RustGenerator do
     :def,
     :sci_ex_test_math_functions_test_exs,
     "priv/rust_generator/templates/sci_ex_test_math_functions_test.exs",
+    [:assigns]
+  )
+
+  @external_resource "priv/rust_generator/templates/sci_ex_test_math_functions_test.exs"
+
+  EEx.function_from_file(
+    :def,
+    :array_binary_operations_rs,
+    "priv/rust_generator/templates/array_binary_operations.rs",
     [:assigns]
   )
 
@@ -173,6 +178,59 @@ defmodule SciEx.RustGenerator do
     generate_math_functions()
     generate_array_builders()
     generate_array_comparisons()
+    generate_binary_operations()
+  end
+
+  def generate_binary_operations() do
+    operations = [
+      add: "+",
+      subtract: "-",
+      multiply: "*",
+      divide: "/"
+    ]
+
+    sci_ex_nif =
+      for nr_of_bits <- [64, 32] do
+        for n_dim <- 1..6 do
+          for {op_name, _} <- operations do
+            [
+              "  def float#{nr_of_bits}_#{op_name}_array#{n_dim}_array#{n_dim}(_a, _b), do: err()",
+              "  def float#{nr_of_bits}_#{op_name}_array#{n_dim}_scalar(_a, _b), do: err()",
+              "  def float#{nr_of_bits}_#{op_name}_scalar_array#{n_dim}(_a, _b), do: err()"
+            ]
+          end
+        end
+      end
+      |> List.flatten()
+      |> Enum.intersperse("\n")
+      |> Enum.join()
+
+    rs_code_array_binary_operations =
+      array_binary_operations_rs(
+        operations: operations,
+        nr_of_bits: 64
+      )
+    File.write!(
+      "native/sci_ex_nif/src/f64_array_binary_operations.rs",
+      rs_code_array_binary_operations
+    )
+
+    rs_code_array_binary_operations =
+      array_binary_operations_rs(
+        operations: operations,
+        nr_of_bits: 32
+      )
+    File.write!(
+      "native/sci_ex_nif/src/f32_array_binary_operations.rs",
+      rs_code_array_binary_operations
+    )
+
+    replace_in_file(
+      "lib/sci_ex/sci_ex_nif.ex",
+      "  # %% BEGIN:GENERATED:float-array-binary-operations %%",
+      "  # %% END:GENERATED:float-array-binary-operations %%",
+      sci_ex_nif
+    )
   end
 
   def generate_math_functions() do
@@ -182,59 +240,68 @@ defmodule SciEx.RustGenerator do
     # try to determine which ones there are from the source, we'll just hardcode
     # them here (the rust compiler warns us of invalid functions with a compile
     # error; I've just followed the errors while hardcoding the functions)
-    std_code = File.read!("priv/rust_generator/rust_modules/f64.rs")
-    all_std_declarations = extract_unary_function_declarations!(std_code)
-    std_declarations = Enum.filter(all_std_declarations, fn decl ->
+    f64_std_code = File.read!("priv/rust_generator/rust_modules/f64.rs")
+    f64_all_std_declarations = extract_unary_function_declarations!(f64_std_code)
+    f64_std_declarations = Enum.filter(f64_all_std_declarations, fn decl ->
       # Remove the `std` functions that depend on unstable features.
       # We'll use an alternate implementation from an external package.
       decl[:type] == "f64" and decl[:function] not in ["gamma", "erf", "erfc", "abs_sub"]
     end)
 
+    f32_std_code = File.read!("priv/rust_generator/rust_modules/f32.rs")
+    f32_all_std_declarations = extract_unary_function_declarations!(f32_std_code)
+    f32_std_declarations = Enum.filter(f32_all_std_declarations, fn decl ->
+      # Remove the `std` functions that depend on unstable features.
+      # We'll use an alternate implementation from an external package.
+      decl[:type] == "f32" and decl[:function] not in ["gamma", "erf", "erfc", "abs_sub"]
+    end)
+
+
     f64_functions =
       for n_dim <- 1..6 do
         default_functions =
-          for decl <- std_declarations do
-            ElementwiseMathFunction.new(n_dim, "f64", "f64", decl[:function], decl[:arguments])
+          for decl <- f64_std_declarations do
+            ElementwiseMathFunction.new(n_dim, 64, "f64", decl[:function], decl[:arguments])
           end
 
         # Pull some extra functions from the `libm` package.
         # TODO: deal with the functions from libm which do require arguments
         extra_functions =
           for name <- ~w(lgamma erf erfc j0 j1 y0 y1) do
-            ElementwiseMathFunction.new(n_dim, "f64", "libm", name, [])
+            ElementwiseMathFunction.new(n_dim, 64, "libm", name, [])
           end
 
-          Enum.sort_by(default_functions ++ extra_functions, fn f -> f.sci_ex_nif_name end)
+        Enum.sort_by(default_functions ++ extra_functions, fn f -> f.sci_ex_nif_name end)
       end
+      |> List.flatten()
 
+    f32_functions =
+      for n_dim <- 1..6 do
+        default_functions =
+          for decl <- f32_std_declarations do
+            ElementwiseMathFunction.new(n_dim, 32, "f32", decl[:function], decl[:arguments])
+          end
 
-    # This will edit the elixir source.
-    # Should we do this with macros instead?
-    replace_in_file(
-      "lib/sci_ex/sci_ex_nif.ex",
-      "  # %% BEGIN:GENERATED:f64-functions %%",
-      "  # %% END:GENERATED:f64-functions %%",
-      functions_to_rustler(List.flatten(f64_functions))
-    )
+        # Pull some extra functions from the `libm` package.
+        # TODO: deal with the functions from libm which do require arguments
+        extra_functions =
+          for name <- ~w(lgamma erf erfc j0 j1 y0 y1) do
+            ElementwiseMathFunction.new(n_dim, 32, "libm", {name, name <> "f"}, [])
+          end
 
-    # We don't need several dimensions here
-    unique_functions = Enum.at(f64_functions, 0)
-
-    if false do
-      # Until we find a way to deal with the docstrings
-      # in n intelligent way, we won't generate these functions
-      # automatically.
-      replace_in_file(
-        "lib/sci_ex.ex",
-        "  # %% BEGIN:GENERATED:f64-functions %%",
-        "  # %% END:GENERATED:f64-functions %%",
-        sci_ex_definitions(unique_functions)
-      )
-    end
+        Enum.sort_by(default_functions ++ extra_functions, fn f -> f.sci_ex_nif_name end)
+      end
+      |> List.flatten()
 
     rs_code_math_functions = math_functions_rs(functions: f64_functions)
     File.write!(
-      "native/sci_ex_nif/src/math_functions.rs",
+      "native/sci_ex_nif/src/f64_math_functions.rs",
+      rs_code_math_functions
+    )
+
+    rs_code_math_functions = math_functions_rs(functions: f32_functions)
+    File.write!(
+      "native/sci_ex_nif/src/f32_math_functions.rs",
       rs_code_math_functions
     )
 
@@ -242,6 +309,15 @@ defmodule SciEx.RustGenerator do
     File.write!(
       "test/sci_ex_test/float_64/math_functions_test.exs",
       ex_code_math_function_tests
+    )
+
+    all_functions = List.flatten([f64_functions, f32_functions])
+
+    replace_in_file(
+      "lib/sci_ex/sci_ex_nif.ex",
+      "  # %% BEGIN:GENERATED:float-functions %%",
+      "  # %% END:GENERATED:float-functions %%",
+      functions_to_rustler(all_functions)
     )
   end
 
@@ -259,15 +335,17 @@ defmodule SciEx.RustGenerator do
     names = ~w(zeros ones)
 
     sci_nif_ex =
-      for name <- names do
-        for n_dim <- 1..6 do
-          args =
-            1..n_dim
-            |> Enum.map(fn i -> "_n#{i}" end)
-            |> Enum.intersperse(", ")
-            |> Enum.join()
+      for type <- ["float64", "float32"] do
+        for name <- names do
+          for n_dim <- 1..6 do
+            args =
+              1..n_dim
+              |> Enum.map(fn i -> "_n#{i}" end)
+              |> Enum.intersperse(", ")
+              |> Enum.join()
 
-          "  def float64_array#{n_dim}_#{name}(#{args}), do: err()"
+            "  def #{type}_array#{n_dim}_#{name}(#{args}), do: err()"
+          end
         end
       end
       |> List.flatten()
@@ -282,8 +360,8 @@ defmodule SciEx.RustGenerator do
 
     replace_in_file(
       "lib/sci_ex/sci_ex_nif.ex",
-      "  # %% BEGIN:GENERATED:f64-array-builders %%",
-      "  # %% END:GENERATED:f64-array-builders %%",
+      "  # %% BEGIN:GENERATED:float-array-builders %%",
+      "  # %% END:GENERATED:float-array-builders %%",
       sci_nif_ex
     )
   end
@@ -296,25 +374,33 @@ defmodule SciEx.RustGenerator do
       )
 
     sci_nif_ex =
-      for n_dim <- 1..6 do
-        for name <- names do
-          "  def float64_array#{n_dim}_#{name}(_a, _b), do: err()"
+      for nr_of_bits <- [64, 32] do
+        for n_dim <- 1..6 do
+          for name <- names do
+            "  def float#{nr_of_bits}_array#{n_dim}_#{name}(_a, _b), do: err()"
+          end
         end
       end
       |> List.flatten()
       |> Enum.intersperse("\n")
       |> to_string()
 
-    rs_code_array_comparisons = array_comparisons_rs()
+    rs_code_array_comparisons = array_comparisons_rs(nr_of_bits: 64)
     File.write!(
-      "native/sci_ex_nif/src/array_comparisons.rs",
+      "native/sci_ex_nif/src/f64_array_comparisons.rs",
+      rs_code_array_comparisons
+    )
+
+    rs_code_array_comparisons = array_comparisons_rs(nr_of_bits: 32)
+    File.write!(
+      "native/sci_ex_nif/src/f32_array_comparisons.rs",
       rs_code_array_comparisons
     )
 
     replace_in_file(
       "lib/sci_ex/sci_ex_nif.ex",
-      "  # %% BEGIN:GENERATED:f64-array-comparisons %%",
-      "  # %% END:GENERATED:f64-array-comparisons %%",
+      "  # %% BEGIN:GENERATED:float-array-comparisons %%",
+      "  # %% END:GENERATED:float-array-comparisons %%",
       sci_nif_ex
     )
   end

@@ -12,73 +12,6 @@ defmodule SciEx.Float64.Array6 do
   require SciEx.ArrayHelpers
   SciEx.ArrayHelpers.bind_comparison_array_ops_to_sci_nifs(__MODULE__, :float64_array6)
 
-  @doc """
-  Creates an array os zeros (`0.0`) with the given dimensions.
-
-  ## Examples
-
-      alias SciEx.Float64.Array6
-      iex> #SciEx.Float64.Array6<[[[[[[1.0, 1.0],
-                [1.0, 1.0]],
-
-                [[1.0, 1.0],
-                 [1.0, 1.0]]],
-
-
-               [[[1.0, 1.0],
-                 [1.0, 1.0]],
-
-                [[1.0, 1.0],
-                 [1.0, 1.0]]]],
-
-
-
-              [[[[1.0, 1.0],
-                 [1.0, 1.0]],
-
-                [[1.0, 1.0],
-                 [1.0, 1.0]]],
-
-
-              [[[1.0, 1.0],
-                [1.0, 1.0]],
-
-                [[1.0, 1.0],
-                 [1.0, 1.0]]]]],
-
-
-
-
-            [[[[[1.0, 1.0],
-                [1.0, 1.0]],
-
-                [[1.0, 1.0],
-                 [1.0, 1.0]]],
-
-
-              [[[1.0, 1.0],
-                [1.0, 1.0]],
-
-                [[1.0, 1.0],
-                 [1.0, 1.0]]]],
-
-
-
-              [[[[1.0, 1.0],
-                 [1.0, 1.0]],
-
-                [[1.0, 1.0],
-                 [1.0, 1.0]]],
-
-
-               [[[1.0, 1.0],
-                 [1.0, 1.0]],
-
-                [[1.0, 1.0],
-                 [1.0, 1.0]]]]]], shape=[2, 2, 2, 2, 2, 2], strides=[32, 16, 8, 4, 2, 1], layout=Cc (0x5), const ndim=6>
-
-  """
-  def zeros(n1, n2, n3, n4, n5, n6), do: SciExNif.float64_array6_zeros(n1, n2, n3, n4, n5, n6)
 
   @doc """
   Creates an array os ones (`1.0`) with the given dimensions.
@@ -144,6 +77,74 @@ defmodule SciEx.Float64.Array6 do
 
                 [[0.0, 0.0],
                  [0.0, 0.0]]]]]], shape=[2, 2, 2, 2, 2, 2], strides=[32, 16, 8, 4, 2, 1], layout=Cc (0x5), const ndim=6>
+
+  """
+  def zeros(n1, n2, n3, n4, n5, n6), do: SciExNif.float64_array6_zeros(n1, n2, n3, n4, n5, n6)
+
+  @doc """
+  Creates an array os zeros (`0.0`) with the given dimensions.
+
+  ## Examples
+
+      alias SciEx.Float64.Array6
+      iex> #SciEx.Float64.Array6<[[[[[[1.0, 1.0],
+                [1.0, 1.0]],
+
+                [[1.0, 1.0],
+                 [1.0, 1.0]]],
+
+
+               [[[1.0, 1.0],
+                 [1.0, 1.0]],
+
+                [[1.0, 1.0],
+                 [1.0, 1.0]]]],
+
+
+
+              [[[[1.0, 1.0],
+                 [1.0, 1.0]],
+
+                [[1.0, 1.0],
+                 [1.0, 1.0]]],
+
+
+              [[[1.0, 1.0],
+                [1.0, 1.0]],
+
+                [[1.0, 1.0],
+                 [1.0, 1.0]]]]],
+
+
+
+
+            [[[[[1.0, 1.0],
+                [1.0, 1.0]],
+
+                [[1.0, 1.0],
+                 [1.0, 1.0]]],
+
+
+              [[[1.0, 1.0],
+                [1.0, 1.0]],
+
+                [[1.0, 1.0],
+                 [1.0, 1.0]]]],
+
+
+
+              [[[[1.0, 1.0],
+                 [1.0, 1.0]],
+
+                [[1.0, 1.0],
+                 [1.0, 1.0]]],
+
+
+               [[[1.0, 1.0],
+                 [1.0, 1.0]],
+
+                [[1.0, 1.0],
+                 [1.0, 1.0]]]]]], shape=[2, 2, 2, 2, 2, 2], strides=[32, 16, 8, 4, 2, 1], layout=Cc (0x5), const ndim=6>
 
   """
   def ones(n1, n2, n3, n4, n5, n6), do: SciExNif.float64_array6_ones(n1, n2, n3, n4, n5, n6)

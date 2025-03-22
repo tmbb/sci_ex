@@ -66,14 +66,14 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array1{} = SciEx.erfc(x)
   end
 
-  test "exp function works on 1D array" do
-    x = Array1.ones(500)
-    assert %Array1{} = SciEx.exp(x)
-  end
-
   test "exp2 function works on 1D array" do
     x = Array1.ones(500)
     assert %Array1{} = SciEx.exp2(x)
+  end
+
+  test "exp function works on 1D array" do
+    x = Array1.ones(500)
+    assert %Array1{} = SciEx.exp(x)
   end
 
   test "exp_m1 function works on 1D array" do
@@ -106,14 +106,14 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array1{} = SciEx.lgamma(x)
   end
 
-  test "ln function works on 1D array" do
-    x = Array1.ones(500)
-    assert %Array1{} = SciEx.ln(x)
-  end
-
   test "ln_1p function works on 1D array" do
     x = Array1.ones(500)
     assert %Array1{} = SciEx.ln_1p(x)
+  end
+
+  test "ln function works on 1D array" do
+    x = Array1.ones(500)
+    assert %Array1{} = SciEx.ln(x)
   end
 
   test "log10 function works on 1D array" do
@@ -236,14 +236,14 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array2{} = SciEx.erfc(x)
   end
 
-  test "exp function works on 2D array" do
-    x = Array2.ones(23, 23)
-    assert %Array2{} = SciEx.exp(x)
-  end
-
   test "exp2 function works on 2D array" do
     x = Array2.ones(23, 23)
     assert %Array2{} = SciEx.exp2(x)
+  end
+
+  test "exp function works on 2D array" do
+    x = Array2.ones(23, 23)
+    assert %Array2{} = SciEx.exp(x)
   end
 
   test "exp_m1 function works on 2D array" do
@@ -276,14 +276,14 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array2{} = SciEx.lgamma(x)
   end
 
-  test "ln function works on 2D array" do
-    x = Array2.ones(23, 23)
-    assert %Array2{} = SciEx.ln(x)
-  end
-
   test "ln_1p function works on 2D array" do
     x = Array2.ones(23, 23)
     assert %Array2{} = SciEx.ln_1p(x)
+  end
+
+  test "ln function works on 2D array" do
+    x = Array2.ones(23, 23)
+    assert %Array2{} = SciEx.ln(x)
   end
 
   test "log10 function works on 2D array" do
@@ -406,14 +406,14 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array3{} = SciEx.erfc(x)
   end
 
-  test "exp function works on 3D array" do
-    x = Array3.ones(8, 8, 8)
-    assert %Array3{} = SciEx.exp(x)
-  end
-
   test "exp2 function works on 3D array" do
     x = Array3.ones(8, 8, 8)
     assert %Array3{} = SciEx.exp2(x)
+  end
+
+  test "exp function works on 3D array" do
+    x = Array3.ones(8, 8, 8)
+    assert %Array3{} = SciEx.exp(x)
   end
 
   test "exp_m1 function works on 3D array" do
@@ -446,14 +446,14 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array3{} = SciEx.lgamma(x)
   end
 
-  test "ln function works on 3D array" do
-    x = Array3.ones(8, 8, 8)
-    assert %Array3{} = SciEx.ln(x)
-  end
-
   test "ln_1p function works on 3D array" do
     x = Array3.ones(8, 8, 8)
     assert %Array3{} = SciEx.ln_1p(x)
+  end
+
+  test "ln function works on 3D array" do
+    x = Array3.ones(8, 8, 8)
+    assert %Array3{} = SciEx.ln(x)
   end
 
   test "log10 function works on 3D array" do
@@ -576,14 +576,14 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array4{} = SciEx.erfc(x)
   end
 
-  test "exp function works on 4D array" do
-    x = Array4.ones(5, 5, 5, 5)
-    assert %Array4{} = SciEx.exp(x)
-  end
-
   test "exp2 function works on 4D array" do
     x = Array4.ones(5, 5, 5, 5)
     assert %Array4{} = SciEx.exp2(x)
+  end
+
+  test "exp function works on 4D array" do
+    x = Array4.ones(5, 5, 5, 5)
+    assert %Array4{} = SciEx.exp(x)
   end
 
   test "exp_m1 function works on 4D array" do
@@ -616,14 +616,14 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array4{} = SciEx.lgamma(x)
   end
 
-  test "ln function works on 4D array" do
-    x = Array4.ones(5, 5, 5, 5)
-    assert %Array4{} = SciEx.ln(x)
-  end
-
   test "ln_1p function works on 4D array" do
     x = Array4.ones(5, 5, 5, 5)
     assert %Array4{} = SciEx.ln_1p(x)
+  end
+
+  test "ln function works on 4D array" do
+    x = Array4.ones(5, 5, 5, 5)
+    assert %Array4{} = SciEx.ln(x)
   end
 
   test "log10 function works on 4D array" do
@@ -746,14 +746,14 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array5{} = SciEx.erfc(x)
   end
 
-  test "exp function works on 5D array" do
-    x = Array5.ones(4, 4, 4, 4, 4)
-    assert %Array5{} = SciEx.exp(x)
-  end
-
   test "exp2 function works on 5D array" do
     x = Array5.ones(4, 4, 4, 4, 4)
     assert %Array5{} = SciEx.exp2(x)
+  end
+
+  test "exp function works on 5D array" do
+    x = Array5.ones(4, 4, 4, 4, 4)
+    assert %Array5{} = SciEx.exp(x)
   end
 
   test "exp_m1 function works on 5D array" do
@@ -786,14 +786,14 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array5{} = SciEx.lgamma(x)
   end
 
-  test "ln function works on 5D array" do
-    x = Array5.ones(4, 4, 4, 4, 4)
-    assert %Array5{} = SciEx.ln(x)
-  end
-
   test "ln_1p function works on 5D array" do
     x = Array5.ones(4, 4, 4, 4, 4)
     assert %Array5{} = SciEx.ln_1p(x)
+  end
+
+  test "ln function works on 5D array" do
+    x = Array5.ones(4, 4, 4, 4, 4)
+    assert %Array5{} = SciEx.ln(x)
   end
 
   test "log10 function works on 5D array" do
@@ -916,14 +916,14 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array6{} = SciEx.erfc(x)
   end
 
-  test "exp function works on 6D array" do
-    x = Array6.ones(3, 3, 3, 3, 3, 3)
-    assert %Array6{} = SciEx.exp(x)
-  end
-
   test "exp2 function works on 6D array" do
     x = Array6.ones(3, 3, 3, 3, 3, 3)
     assert %Array6{} = SciEx.exp2(x)
+  end
+
+  test "exp function works on 6D array" do
+    x = Array6.ones(3, 3, 3, 3, 3, 3)
+    assert %Array6{} = SciEx.exp(x)
   end
 
   test "exp_m1 function works on 6D array" do
@@ -956,14 +956,14 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array6{} = SciEx.lgamma(x)
   end
 
-  test "ln function works on 6D array" do
-    x = Array6.ones(3, 3, 3, 3, 3, 3)
-    assert %Array6{} = SciEx.ln(x)
-  end
-
   test "ln_1p function works on 6D array" do
     x = Array6.ones(3, 3, 3, 3, 3, 3)
     assert %Array6{} = SciEx.ln_1p(x)
+  end
+
+  test "ln function works on 6D array" do
+    x = Array6.ones(3, 3, 3, 3, 3, 3)
+    assert %Array6{} = SciEx.ln(x)
   end
 
   test "log10 function works on 6D array" do

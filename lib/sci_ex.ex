@@ -3,217 +3,246 @@ defmodule SciEx do
   Documentation for `SciEx`.
   """
 
+  import Kernel, except: [+: 2, -: 2, *: 2, /: 2]
   import SciEx.ArrayHelpers
 
-  def_vectorized_bin_op_f64(a + b, :add, :add)
+  @doc """
+  Add two values (arrays or scalars).
+  If both arguments are arrays, this function implements
+  element-wise subtraction.
+  """
+  def_vectorized_bin_op_float(a + b, :add, :add)
+
+  @doc """
+  Subtract two values (arrays or scalars).
+  If both arguments are arrays, this function implements
+  element-wise subtraction.
+  """
+  def_vectorized_bin_op_float(a - b, :subtract, :subtract)
+
+  @doc """
+  Multiply two values (arrays or scalars).
+  If both arguments are arrays, this function implements
+  element-wise multiplication.
+  """
+  def_vectorized_bin_op_float(a * b, :multiply, :multiply)
+
+  @doc """
+  Divide two values (arrays or scalars).
+  If both arguments are arrays, this function implements
+  element-wise division.
+
+  Raises an error in case of division by zero.
+  """
+  def_vectorized_bin_op_float(a / b, :divide, :divide)
 
   @doc """
   TODO
   """
-  def_f64(acos(array))
+  def_float(acos(array))
 
   @doc """
   TODO
   """
-  def_f64(acosh(array))
+  def_float(acosh(array))
 
   @doc """
   TODO
   """
-  def_f64(asin(array))
+  def_float(asin(array))
 
   @doc """
   TODO
   """
-  def_f64(asinh(array))
+  def_float(asinh(array))
 
   @doc """
   TODO
   """
-  def_f64(atan(array))
+  def_float(atan(array))
 
   @doc """
   TODO
   """
-  def_f64(atan2(array, other))
+  def_float(atan2(array, other))
 
   @doc """
   TODO
   """
-  def_f64(atanh(array))
+  def_float(atanh(array))
 
   @doc """
   TODO
   """
-  def_f64(cbrt(array))
+  def_float(cbrt(array))
 
   @doc """
   TODO
   """
-  def_f64(ceil(array))
+  def_float(ceil(array))
 
   @doc """
   TODO
   """
-  def_f64(cos(array))
+  def_float(cos(array))
 
   @doc """
   TODO
   """
-  def_f64(cosh(array))
+  def_float(cosh(array))
 
   @doc """
   TODO
   """
-  def_f64(div_euclid(array, rhs))
+  def_float(div_euclid(array, rhs))
 
   @doc """
   TODO
   """
-  def_f64(erf(array))
+  def_float(erf(array))
 
   @doc """
   TODO
   """
-  def_f64(erfc(array))
+  def_float(erfc(array))
 
   @doc """
   TODO
   """
-  def_f64(exp(array))
+  def_float(exp(array))
 
   @doc """
   TODO
   """
-  def_f64(exp2(array))
+  def_float(exp2(array))
 
   @doc """
   TODO
   """
-  def_f64(exp_m1(array))
+  def_float(exp_m1(array))
 
   @doc """
   TODO
   """
-  def_f64(floor(array))
+  def_float(floor(array))
 
   @doc """
   TODO
   """
-  def_f64(fract(array))
+  def_float(fract(array))
 
   @doc """
   TODO
   """
-  def_f64(hypot(array, other))
+  def_float(hypot(array, other))
 
   @doc """
   TODO
   """
-  def_f64(j0(array))
+  def_float(j0(array))
 
   @doc """
   TODO
   """
-  def_f64(j1(array))
+  def_float(j1(array))
 
   @doc """
   TODO
   """
-  def_f64(lgamma(array))
+  def_float(lgamma(array))
 
   @doc """
   TODO
   """
-  def_f64(ln(array))
+  def_float(ln(array))
 
   @doc """
   TODO
   """
-  def_f64(ln_1p(array))
+  def_float(ln_1p(array))
 
   @doc """
   TODO
   """
-  def_f64(log(array, base))
+  def_float(log(array, base))
 
   @doc """
   TODO
   """
-  def_f64(log10(array))
+  def_float(log10(array))
 
   @doc """
   TODO
   """
-  def_f64(log2(array))
+  def_float(log2(array))
 
   @doc """
   TODO
   """
-  def_f64(mul_add(array, a, b))
+  def_float(mul_add(array, a, b))
 
   @doc """
   TODO
   """
-  def_f64(powf(array, n))
+  def_float(powf(array, n))
 
   @doc """
   TODO
   """
-  def_f64(powi(array, n))
+  def_float(powi(array, n))
 
   @doc """
   TODO
   """
-  def_f64(rem_euclid(array, rhs))
+  def_float(rem_euclid(array, rhs))
 
   @doc """
   TODO
   """
-  def_f64(round(array))
+  def_float(round(array))
 
   @doc """
   TODO
   """
-  def_f64(round_ties_even(array))
+  def_float(round_ties_even(array))
 
   @doc """
   TODO
   """
-  def_f64(sin(array))
+  def_float(sin(array))
 
   @doc """
   TODO
   """
-  def_f64(sinh(array))
+  def_float(sinh(array))
 
   @doc """
   TODO
   """
-  def_f64(sqrt(array))
+  def_float(sqrt(array))
 
   @doc """
   TODO
   """
-  def_f64(tan(array))
+  def_float(tan(array))
 
   @doc """
   TODO
   """
-  def_f64(tanh(array))
+  def_float(tanh(array))
 
   @doc """
   TODO
   """
-  def_f64(trunc(array))
+  def_float(trunc(array))
 
   @doc """
   TODO
   """
-  def_f64(y0(array))
+  def_float(y0(array))
 
   @doc """
   TODO
   """
-  def_f64(y1(array))
+  def_float(y1(array))
 end
