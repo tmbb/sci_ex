@@ -1,6 +1,6 @@
 defmodule SciEx.Float32.Array6 do
   @moduledoc """
-  6D Array of 32it floating points
+  6D Array of 32-bit floating point numbers
   """
 
   defstruct resource: nil
