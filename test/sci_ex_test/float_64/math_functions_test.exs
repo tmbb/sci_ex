@@ -36,9 +36,9 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array1{} = SciEx.atanh(x)
   end
 
-  test "cbrt function works on 1D array" do
+  test "cube_root function works on 1D array" do
     x = Array1.ones(500)
-    assert %Array1{} = SciEx.cbrt(x)
+    assert %Array1{} = SciEx.cube_root(x)
   end
 
   test "ceil function works on 1D array" do
@@ -206,9 +206,9 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array2{} = SciEx.atanh(x)
   end
 
-  test "cbrt function works on 2D array" do
+  test "cube_root function works on 2D array" do
     x = Array2.ones(23, 23)
-    assert %Array2{} = SciEx.cbrt(x)
+    assert %Array2{} = SciEx.cube_root(x)
   end
 
   test "ceil function works on 2D array" do
@@ -376,9 +376,9 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array3{} = SciEx.atanh(x)
   end
 
-  test "cbrt function works on 3D array" do
+  test "cube_root function works on 3D array" do
     x = Array3.ones(8, 8, 8)
-    assert %Array3{} = SciEx.cbrt(x)
+    assert %Array3{} = SciEx.cube_root(x)
   end
 
   test "ceil function works on 3D array" do
@@ -546,9 +546,9 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array4{} = SciEx.atanh(x)
   end
 
-  test "cbrt function works on 4D array" do
+  test "cube_root function works on 4D array" do
     x = Array4.ones(5, 5, 5, 5)
-    assert %Array4{} = SciEx.cbrt(x)
+    assert %Array4{} = SciEx.cube_root(x)
   end
 
   test "ceil function works on 4D array" do
@@ -716,9 +716,9 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array5{} = SciEx.atanh(x)
   end
 
-  test "cbrt function works on 5D array" do
+  test "cube_root function works on 5D array" do
     x = Array5.ones(4, 4, 4, 4, 4)
-    assert %Array5{} = SciEx.cbrt(x)
+    assert %Array5{} = SciEx.cube_root(x)
   end
 
   test "ceil function works on 5D array" do
@@ -886,9 +886,9 @@ defmodule SciExTest.Float64.MathFunctionsTest do
     assert %Array6{} = SciEx.atanh(x)
   end
 
-  test "cbrt function works on 6D array" do
+  test "cube_root function works on 6D array" do
     x = Array6.ones(3, 3, 3, 3, 3, 3)
-    assert %Array6{} = SciEx.cbrt(x)
+    assert %Array6{} = SciEx.cube_root(x)
   end
 
   test "ceil function works on 6D array" do

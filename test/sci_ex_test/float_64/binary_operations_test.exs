@@ -27,7 +27,7 @@ defmodule SciExTest.Float64.BinaryOperationsTest do
   end
 
   property "Float64.Array1 - zero is the identity of addition (array, array), operator" do
-    check all {algo, seed} <- gen_random_algorithm_and_seed() do
+    check all({algo, seed} <- gen_random_algorithm_and_seed()) do
       :rand.seed(algo, seed)
 
       a = Random.draw_from_normal(0.0, 50.0, 10)
@@ -38,7 +38,7 @@ defmodule SciExTest.Float64.BinaryOperationsTest do
   end
 
   property "Float64.Array1 - zero is the identity of addition (array, array), function" do
-    check all {algo, seed} <- gen_random_algorithm_and_seed() do
+    check all({algo, seed} <- gen_random_algorithm_and_seed()) do
       :rand.seed(algo, seed)
 
       a = Random.draw_from_normal(0.0, 50.0, 10)
@@ -49,7 +49,7 @@ defmodule SciExTest.Float64.BinaryOperationsTest do
   end
 
   property "Float64.Array1 - zero is the identity of addition (array, scalar), operator" do
-    check all {algo, seed} <- gen_random_algorithm_and_seed() do
+    check all({algo, seed} <- gen_random_algorithm_and_seed()) do
       :rand.seed(algo, seed)
 
       a = Random.draw_from_normal(0.0, 50.0, 10)
@@ -60,7 +60,7 @@ defmodule SciExTest.Float64.BinaryOperationsTest do
   end
 
   property "Float64.Array1 - zero is the identity of addition (array, scalar), function" do
-    check all {algo, seed} <- gen_random_algorithm_and_seed() do
+    check all({algo, seed} <- gen_random_algorithm_and_seed()) do
       :rand.seed(algo, seed)
 
       a = Random.draw_from_normal(0.0, 50.0, 10)
@@ -71,7 +71,7 @@ defmodule SciExTest.Float64.BinaryOperationsTest do
   end
 
   property "Float64.Array1 - zero is the identity of addition (scalar, array), operator" do
-    check all {algo, seed} <- gen_random_algorithm_and_seed() do
+    check all({algo, seed} <- gen_random_algorithm_and_seed()) do
       :rand.seed(algo, seed)
 
       a = Random.draw_from_normal(0.0, 50.0, 10)
@@ -82,7 +82,7 @@ defmodule SciExTest.Float64.BinaryOperationsTest do
   end
 
   property "Float64.Array1 - zero is the identity of addition (scalar, array), function" do
-    check all {algo, seed} <- gen_random_algorithm_and_seed() do
+    check all({algo, seed} <- gen_random_algorithm_and_seed()) do
       :rand.seed(algo, seed)
 
       a = Random.draw_from_normal(0.0, 50.0, 10)
@@ -93,7 +93,7 @@ defmodule SciExTest.Float64.BinaryOperationsTest do
   end
 
   property "Float64.Array1 - one is the identity of multiplication (array, array), operator" do
-    check all {algo, seed} <- gen_random_algorithm_and_seed() do
+    check all({algo, seed} <- gen_random_algorithm_and_seed()) do
       :rand.seed(algo, seed)
 
       a = Random.draw_from_normal(1.0, 51.0, 10)
@@ -104,7 +104,7 @@ defmodule SciExTest.Float64.BinaryOperationsTest do
   end
 
   property "Float64.Array1 - one is the identity of multiplication (array, array), function" do
-    check all {algo, seed} <- gen_random_algorithm_and_seed() do
+    check all({algo, seed} <- gen_random_algorithm_and_seed()) do
       :rand.seed(algo, seed)
 
       a = Random.draw_from_normal(1.0, 51.0, 10)
@@ -115,7 +115,7 @@ defmodule SciExTest.Float64.BinaryOperationsTest do
   end
 
   property "Float64.Array1 - one is the identity of multiplication (array, scalar), operator" do
-    check all {algo, seed} <- gen_random_algorithm_and_seed() do
+    check all({algo, seed} <- gen_random_algorithm_and_seed()) do
       :rand.seed(algo, seed)
 
       a = Random.draw_from_normal(1.0, 51.0, 10)
@@ -126,7 +126,7 @@ defmodule SciExTest.Float64.BinaryOperationsTest do
   end
 
   property "Float64.Array1 - one is the identity of multiplication (array, scalar), function" do
-    check all {algo, seed} <- gen_random_algorithm_and_seed() do
+    check all({algo, seed} <- gen_random_algorithm_and_seed()) do
       :rand.seed(algo, seed)
 
       a = Random.draw_from_normal(1.0, 51.0, 10)
@@ -137,7 +137,7 @@ defmodule SciExTest.Float64.BinaryOperationsTest do
   end
 
   property "Float64.Array1 - one is the identity of multiplication (scalar, array), operator" do
-    check all {algo, seed} <- gen_random_algorithm_and_seed() do
+    check all({algo, seed} <- gen_random_algorithm_and_seed()) do
       :rand.seed(algo, seed)
 
       a = Random.draw_from_normal(1.0, 51.0, 10)
@@ -148,7 +148,7 @@ defmodule SciExTest.Float64.BinaryOperationsTest do
   end
 
   property "Float64.Array1 - one is the identity of multiplication (scalar, array), function" do
-    check all {algo, seed} <- gen_random_algorithm_and_seed() do
+    check all({algo, seed} <- gen_random_algorithm_and_seed()) do
       :rand.seed(algo, seed)
 
       a = Random.draw_from_normal(1.0, 51.0, 10)
