@@ -3,6 +3,17 @@ defmodule SciEx do
   Documentation for `SciEx`.
   """
 
+  # This cutoff was determined experimentally from benchmarks.
+  # It gives at leat a 2x speedup for most vectorized functions
+  # for input arrays of size > 100_000.
+  #
+  # The speedup is even larger for large arrays, at least until
+  # memory allocation becomes a bottleneck for very large arrays
+  #
+  # See the benchmarks in the 'benchmarks/parallel_impl.exs'.
+
+  @default_parallellization_strategy  {:size_cutoff, 100_000}
+
   rust_std_lib_link = fn module, name ->
     "[`#{module}::#{name}()`](https://doc.rust-lang.org/std/primitive.f64.html#method.#{name})"
   end
@@ -389,4 +400,41 @@ defmodule SciEx do
   TODO
   """
   defvectorized2(:rem_euclid, :rem_euclid, [x, y], [x, y], prefix: "math")
+
+  # Parallelization utilities
+
+  @doc """
+  Gets the parallelization strategy from the currrent process.
+  """
+  def get_parallelization_strategy() do
+    # Cutoff determined experimentally from benchmarks
+    Process.get(
+      :"$sci_ex_parallelization_strategy",
+      @default_parallellization_strategy
+    )
+  end
+
+  @doc """
+  Puts a parallelization strategy in the current process.
+  """
+  def put_parallelization_strategy(strategy) do
+    Process.put(:"$sci_ex_parallelization_strategy", strategy)
+  end
+
+  @doc """
+  Run a function with the given parallelization strategy.
+
+  The parallelization strategy is set for the current process
+  for the duration of the function's execution and then reset
+  to the previous value.
+  """
+  def parallel(strategy, fun) do
+    old_parallelization_strategy = Process.get(:"$sci_ex_parallelization_strategy")
+    try do
+      put_parallelization_strategy(strategy)
+      fun.()
+    after
+      put_parallelization_strategy(old_parallelization_strategy)
+    end
+  end
 end

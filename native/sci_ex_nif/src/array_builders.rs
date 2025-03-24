@@ -72,3 +72,66 @@ pub fn float64_array5_ones(n1: usize, n2: usize, n3: usize, n4: usize, n5: usize
 pub fn float64_array6_ones(n1: usize, n2: usize, n3: usize, n4: usize, n5: usize, n6: usize) -> ExFloat64Array6 {
     ExFloat64Array6::new(Array6::ones((n1, n2, n3, n4, n5, n6)))
 }
+
+// Array of zeros
+#[rustler::nif]
+pub fn float32_array1_zeros(n1: usize) -> ExFloat32Array1 {
+    ExFloat32Array1::new(Array1::zeros(n1))
+}
+
+#[rustler::nif]
+pub fn float32_array2_zeros(n1: usize, n2: usize) -> ExFloat32Array2 {
+    ExFloat32Array2::new(Array2::zeros((n1, n2)))
+}
+
+#[rustler::nif]
+pub fn float32_array3_zeros(n1: usize, n2: usize, n3: usize) -> ExFloat32Array3 {
+    ExFloat32Array3::new(Array3::zeros((n1, n2, n3)))
+}
+
+#[rustler::nif]
+pub fn float32_array4_zeros(n1: usize, n2: usize, n3: usize, n4: usize) -> ExFloat32Array4 {
+    ExFloat32Array4::new(Array4::zeros((n1, n2, n3, n4)))
+}
+
+#[rustler::nif]
+pub fn float32_array5_zeros(n1: usize, n2: usize, n3: usize, n4: usize, n5: usize) -> ExFloat32Array5 {
+    ExFloat32Array5::new(Array5::zeros((n1, n2, n3, n4, n5)))
+}
+
+#[rustler::nif]
+pub fn float32_array6_zeros(n1: usize, n2: usize, n3: usize, n4: usize, n5: usize, n6: usize) -> ExFloat32Array6 {
+    ExFloat32Array6::new(Array6::zeros((n1, n2, n3, n4, n5, n6)))
+}
+
+
+// Array of ones
+#[rustler::nif]
+pub fn float32_array1_ones(n1: usize) -> ExFloat32Array1 {
+    ExFloat32Array1::new(Array1::ones(n1))
+}
+
+#[rustler::nif]
+pub fn float32_array2_ones(n1: usize, n2: usize) -> ExFloat32Array2 {
+    ExFloat32Array2::new(Array2::ones((n1, n2)))
+}
+
+#[rustler::nif]
+pub fn float32_array3_ones(n1: usize, n2: usize, n3: usize) -> ExFloat32Array3 {
+    ExFloat32Array3::new(Array3::ones((n1, n2, n3)))
+}
+
+#[rustler::nif]
+pub fn float32_array4_ones(n1: usize, n2: usize, n3: usize, n4: usize) -> ExFloat32Array4 {
+    ExFloat32Array4::new(Array4::ones((n1, n2, n3, n4)))
+}
+
+#[rustler::nif]
+pub fn float32_array5_ones(n1: usize, n2: usize, n3: usize, n4: usize, n5: usize) -> ExFloat32Array5 {
+    ExFloat32Array5::new(Array5::ones((n1, n2, n3, n4, n5)))
+}
+
+#[rustler::nif]
+pub fn float32_array6_ones(n1: usize, n2: usize, n3: usize, n4: usize, n5: usize, n6: usize) -> ExFloat32Array6 {
+    ExFloat32Array6::new(Array6::ones((n1, n2, n3, n4, n5, n6)))
+}

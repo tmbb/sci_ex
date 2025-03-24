@@ -36,6 +36,9 @@ defmodule SciEx.ArrayHelpers do
     prefix = Keyword.fetch!(opts, :prefix)
     bit_values = Keyword.get(opts, :bits, [64, 32])
     n_dims = Keyword.get(opts, :n_dims, 6)
+    parallel_var = Macro.var(:parallel, __MODULE__)
+
+    function_args = args ++ [parallel_var]
 
     cases =
       for bits <- bit_values do
@@ -63,7 +66,7 @@ defmodule SciEx.ArrayHelpers do
             quote do
               %unquote(array_module){} ->
                 SciEx.SciExNif.unquote(:"#{prefix}_float#{bits}_#{rs_f}_array#{n_dim}")(
-                  unquote_splicing(args)
+                  unquote_splicing(function_args)
                 )
             end
 
@@ -77,7 +80,14 @@ defmodule SciEx.ArrayHelpers do
 
 
     quote do
-      def unquote(ex_f)(unquote_splicing(args)) do
+      def unquote(ex_f)(unquote_splicing(args), opts \\ []) do
+        unquote(parallel_var) =
+          Keyword.get(
+            opts,
+            :parallel,
+            SciEx.get_parallelization_strategy()
+          )
+
         unquote(case_statement)
       end
     end
@@ -91,6 +101,9 @@ defmodule SciEx.ArrayHelpers do
     prefix = Keyword.fetch!(opts, :prefix)
     bit_values = Keyword.get(opts, :bits, [64, 32])
     n_dims = Keyword.get(opts, :n_dims, 6)
+    parallel_var = Macro.var(:parallel, __MODULE__)
+
+    function_args = args ++ [parallel_var]
 
     cases =
       for bits <- bit_values do
@@ -118,7 +131,7 @@ defmodule SciEx.ArrayHelpers do
             quote do
               {x1, %unquote(array_module){}} when is_number(x1) ->
                 SciEx.SciExNif.unquote(:"#{prefix}_float#{bits}_#{rs_f}_scalar_array#{n_dim}")(
-                  unquote_splicing(args)
+                  unquote_splicing(function_args)
                 )
             end
 
@@ -126,7 +139,7 @@ defmodule SciEx.ArrayHelpers do
             quote do
               {%unquote(array_module){}, x2} when is_number(x2) ->
                 SciEx.SciExNif.unquote(:"#{prefix}_float#{bits}_#{rs_f}_array#{n_dim}_scalar")(
-                  unquote_splicing(args)
+                  unquote_splicing(function_args)
                 )
             end
 
@@ -134,7 +147,7 @@ defmodule SciEx.ArrayHelpers do
             quote do
               {%unquote(array_module){}, %unquote(array_module){}} ->
                 SciEx.SciExNif.unquote(:"#{prefix}_float#{bits}_#{rs_f}_array#{n_dim}_array#{n_dim}")(
-                  unquote_splicing(args)
+                  unquote_splicing(function_args)
                 )
             end
 
@@ -158,7 +171,14 @@ defmodule SciEx.ArrayHelpers do
 
 
     quote do
-      def unquote(ex_f)(unquote_splicing(args)) do
+      def unquote(ex_f)(unquote_splicing(args), opts \\ []) do
+        unquote(parallel_var) =
+          Keyword.get(
+            opts,
+            :parallel,
+            SciEx.get_parallelization_strategy()
+          )
+
         unquote(case_statement)
       end
     end
@@ -268,70 +288,6 @@ defmodule SciEx.ArrayHelpers do
     quote do
       def unquote(call) do
         unquote(case_statement)
-      end
-    end
-  end
-
-  defmacro bind_comparison_array_ops_to_sci_nifs(module, prefix) do
-    quote do
-      @doc """
-      Tests whether two arrays are equal.
-      The arrays are considered equal if every element from `a`
-      is equal to the element of `b` with the same index.
-      """
-      def equal?(%unquote(module){} = a, %unquote(module){} = b) do
-        SciEx.SciExNif.unquote(:"#{prefix}_equal")(a, b)
-      end
-
-      @doc """
-      Tests whether two arrays are different.
-      """
-      def not_equal?(%unquote(module){} = a, %unquote(module){} = b) do
-        SciEx.SciExNif.unquote(:"#{prefix}_not_equal")(a, b)
-      end
-
-      @doc """
-      Tests whether every element in `a` is different from the element
-      in `b` with the same index.
-
-      This function is different from `not_equal?/2` as `not_equal?/2`
-      considers the arrays to be different as long as a single element
-      difers.
-      """
-      def all_not_equal?(%unquote(module){} = a, %unquote(module){} = b) do
-        SciEx.SciExNif.unquote(:"#{prefix}_all_not_equal")(a, b)
-      end
-
-      @doc """
-      Tests whether every element in `a` is less than every element
-      in `b` with the same index.
-      """
-      def all_less_than?(%unquote(module){} = a, %unquote(module){} = b) do
-        SciEx.SciExNif.unquote(:"#{prefix}_all_less_than")(a, b)
-      end
-
-      @doc """
-      Tests whether every element in `a` is less than or equal to
-      every element in `b` with the same index.
-      """
-      def all_less_than_or_equal(%unquote(module){} = a, %unquote(module){} = b) do
-        SciEx.SciExNif.unquote(:"#{prefix}_all_less_than_or_equal")(a, b)
-      end
-
-      @doc """
-      Tests whether every element in `a` is less than every element
-      in `b` with the same index.
-      """
-      def all_greater_than(%unquote(module){} = a, %unquote(module){} = b) do
-        SciEx.SciExNif.unquote(:"#{prefix}_all_greater_than")(a, b)
-      end
-
-      @doc """
-      Tests whether every element in `a` is greater than or equal to
-      every element in `b` with the same index.
-      """
-      def all_greater_than_or_equal(%unquote(module){} = a, %unquote(module){} = b) do
-        SciEx.SciExNif.unquote(:"#{prefix}_all_greater_than_or_equal")(a, b)
       end
     end
   end

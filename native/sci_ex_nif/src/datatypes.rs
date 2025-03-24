@@ -1,5 +1,25 @@
-use rustler::{Resource, ResourceArc, NifStruct};
-use ndarray::{Array1, Array2, Array3, Array4, Array5, Array6};
+use rustler::{Resource, ResourceArc, NifStruct, NifTaggedEnum};
+use ndarray::{Array1, Array2, Array3, Array4, Array5, Array6, ArrayBase, RawData, Dimension};
+
+#[derive(NifTaggedEnum)]
+pub enum ParallelizationStrategy {
+    NeverParallel,
+    AlwaysParallel,
+    SizeCutoff(usize)
+}
+
+impl ParallelizationStrategy {
+    pub fn should_be_parallel<S: RawData, D: Dimension>(self, array: &ArrayBase<S, D>) -> bool {
+        match self {
+            ParallelizationStrategy::NeverParallel => false,
+            ParallelizationStrategy::AlwaysParallel => true,
+            ParallelizationStrategy::SizeCutoff(size) => {
+                let total_array_size: usize = array.shape().iter().product();
+                total_array_size >= size
+            }
+        }
+    }
+}
 
 macro_rules! elixirize {
     ($rust_ty:ident, $element_ty:ident, $ex_module:expr, $ex_ref_ty:ident, $ex_ty:ident) => {

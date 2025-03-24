@@ -7,6 +7,8 @@ defmodule SciEx.Gen.Main do
     # When we generate it for real, update this to the real path
     output_path = "native/sci_ex_nif/src/math_float#{bits}.rs"
 
+    test_path = "test/sci_ex_test/float_#{bits}/math_functions_test.exs"
+
     type = "f#{bits}"
 
     # Create our rust/rustler module
@@ -14,7 +16,7 @@ defmodule SciEx.Gen.Main do
       prefix: "math",
       type: "float",
       bits: bits,
-      extra_imports: []
+      extra_imports: ["use libm::Libm;"]
     }
 
     # Add vectorized functions to the module
@@ -30,11 +32,27 @@ defmodule SciEx.Gen.Main do
 
     math_float_module = RustModule.add_vectorized_functions_from_file(
       math_float_module,
-      "priv/rust_generator/rust_modules/libm_api.rs",
-      rs_module: "libm"
+      "priv/rust_generator/rust_modules/f#{bits}_libm_api.rs",
+      rs_module: "Libm::<f#{bits}>"
     )
 
     RustModule.to_rust_file(math_float_module, output_path)
+
+    RustModule.to_ex_test_file(
+      math_float_module,
+      test_path,
+      overrides: %{
+        "cbrt" => "cube_root"
+      },
+      exclude: [
+        "to_radians",
+        "to_degrees",
+        "signum",
+        "tgamma",
+        "recip",
+        "log1p"
+      ]
+    )
 
     RustModule.to_elixir_nif_file(
       math_float_module,
