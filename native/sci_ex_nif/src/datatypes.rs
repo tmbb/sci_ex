@@ -1,5 +1,6 @@
 use rustler::{Resource, ResourceArc, NifStruct, NifTaggedEnum};
 use ndarray::{Array1, Array2, Array3, Array4, Array5, Array6, ArrayBase, RawData, Dimension};
+use ndrustfft::Complex;
 
 #[derive(NifTaggedEnum)]
 pub enum ParallelizationStrategy {
@@ -130,4 +131,68 @@ pub fn float32_array5_inspect(ex_array5: ExFloat32Array5) -> String {
 pub fn float32_array6_inspect(ex_array6: ExFloat32Array6) -> String {
     let array6: &Array6<f32> = &ex_array6.resource.0;
     format!("{:?}", &array6)
+}
+
+pub struct ExComplex64Ref(pub Complex<f64>);
+
+#[rustler::resource_impl]
+impl Resource for ExComplex64Ref {}
+
+#[derive(NifStruct)]
+#[module = "SciEx.Complex64"]
+pub struct ExComplex64 {
+    pub resource: ResourceArc<ExComplex64Ref>
+}
+
+impl std::panic::RefUnwindSafe for ExComplex64 {}
+
+impl ExComplex64 {
+    pub fn new(z: Complex<f64>) -> Self {
+        Self {
+            resource: ResourceArc::new(ExComplex64Ref(z))
+        }
+    }
+}
+
+#[rustler::nif]
+fn complex64_new(re: f64, im: f64) -> ExComplex64 {
+    ExComplex64::new(Complex::new(re, im))
+}
+
+#[rustler::nif]
+fn complex64_inspect(z: ExComplex64) -> String {
+    let z0: Complex<f64> = z.resource.0;
+    format!("{} + {}i", z0.re, z0.im)
+}
+
+pub struct ExComplex32Ref(pub Complex<f32>);
+
+#[rustler::resource_impl]
+impl Resource for ExComplex32Ref {}
+
+#[derive(NifStruct)]
+#[module = "SciEx.Complex32"]
+pub struct ExComplex32 {
+    pub resource: ResourceArc<ExComplex32Ref>
+}
+
+impl std::panic::RefUnwindSafe for ExComplex32 {}
+
+impl ExComplex32 {
+    pub fn new(z: Complex<f32>) -> Self {
+        Self {
+            resource: ResourceArc::new(ExComplex32Ref(z))
+        }
+    }
+}
+
+#[rustler::nif]
+fn complex32_new(re: f32, im: f32) -> ExComplex32 {
+    ExComplex32::new(Complex::new(re, im))
+}
+
+#[rustler::nif]
+fn complex32_inspect(z: ExComplex32) -> String {
+    let z0: Complex<f32> = z.resource.0;
+    format!("{} + {}i", z0.re, z0.im)
 }

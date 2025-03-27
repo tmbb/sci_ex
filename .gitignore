@@ -27,3 +27,5 @@ sci_ex-*.tar
 
 # Rust binary artifacts
 /target/
+
+.iex.exs

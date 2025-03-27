@@ -1,6 +1,24 @@
 defmodule SciEx.Gen.Main do
   alias SciEx.Gen.RustModule
 
+  require EEx
+
+  @external_resource "priv/rust_generator/templates/vectorized_function.rs"
+
+  EEx.function_from_file(
+    :def,
+    :fft_rs,
+    "priv/rust_generator/templates/fft_float.rs",
+    [:assigns]
+  )
+
+  def generate_fft(bits) do
+    path = "native/sci_ex_nif/src/fft_float#{bits}.rs"
+    code = fft_rs(bits: bits)
+
+    File.write!(path, code)
+  end
+
   def generate_math_float_code(bits) when bits in [64, 32] do
     # Standardized naming scheme helps keep the source data tidy
     input_path = "priv/rust_generator/rust_modules/f#{bits}_api.rs"
@@ -62,9 +80,13 @@ defmodule SciEx.Gen.Main do
   end
 
   def run() do
-    # Generate 64-bit and 32-bit code
-    generate_math_float_code(64)
-    generate_math_float_code(32)
+    generate_fft(64)
+    generate_fft(32)
+
+
+    # # Generate 64-bit and 32-bit code
+    # generate_math_float_code(64)
+    # generate_math_float_code(32)
 
     :ok
   end
