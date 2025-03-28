@@ -44,14 +44,14 @@
 #     [:assigns]
 #   )
 
-#   @external_resource "priv/rust_generator/templates/array_comparisons.rs"
+  # @external_resource "priv/rust_generator/templates/array_comparisons.rs"
 
-#   EEx.function_from_file(
-#     :def,
-#     :array_comparisons_rs,
-#     "priv/rust_generator/templates/array_comparisons.rs",
-#     [:assigns]
-#   )
+  # EEx.function_from_file(
+  #   :def,
+  #   :array_comparisons_rs,
+  #   "priv/rust_generator/templates/array_comparisons.rs",
+  #   [:assigns]
+  # )
 
 #   @external_resource "priv/rust_generator/templates/array_builders.rs"
 
@@ -158,8 +158,8 @@
 
 #     replace_in_file(
 #       "lib/sci_ex/sci_ex_nif.ex",
-#       "  # %% BEGIN:GENERATED:float-array-binary-operations %%",
-#       "  # %% END:GENERATED:float-array-binary-operations %%",
+#       "  # %% BEGIN:GENERATED:float_array_binary_operations %%",
+#       "  # %% END:GENERATED:float_array_binary_operations %%",
 #       sci_ex_nif
 #     )
 #   end
@@ -330,8 +330,8 @@
 
 #     replace_in_file(
 #       "lib/sci_ex/sci_ex_nif.ex",
-#       "  # %% BEGIN:GENERATED:float-array-comparisons %%",
-#       "  # %% END:GENERATED:float-array-comparisons %%",
+#       "  # %% BEGIN:GENERATED:float_array_comparisons %%",
+#       "  # %% END:GENERATED:float_array_comparisons %%",
 #       sci_nif_ex
 #     )
 #   end

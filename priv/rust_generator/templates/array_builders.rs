@@ -4,38 +4,122 @@
 // Edit the template at 'priv/rust_generator/templates/array_builders.rs' instead
 // ==================================================================================
 
+use rustler::{NifResult, Error};
 use ndarray::{Array1, Array2, Array3, Array4, Array5, Array6};
+use ndrustfft::Complex;
 use crate::datatypes::*;
 
-// Array builders
-// --------------
+// Array builders - Real numbers
+// ----------------------------
 
+<%= for bits <- [32, 64] do %>
 // Array of zeros
 #[rustler::nif]
-pub fn float64_array1_zeros(n1: usize) -> ExFloat64Array1 {
-    ExFloat64Array1::new(Array1::zeros(n1))
+pub fn float<%= bits %>_array1_zeros(n1: usize) -> ExFloat<%= bits %>Array1 {
+    ExFloat<%= bits %>Array1::new(Array1::zeros(n1))
 }
 <%= for n_dim <- 2..6 do %><% 
   typed_args = Enum.map(1..n_dim, fn i -> "n#{i}: usize" end) |> Enum.intersperse(", ")
   untyped_args = Enum.map(1..n_dim, fn i -> "n#{i}" end) |> Enum.intersperse(", ")
 %>
 #[rustler::nif]
-pub fn float64_array<%= n_dim %>_zeros(<%= typed_args %>) -> ExFloat64Array<%= n_dim %> {
-    ExFloat64Array<%= n_dim %>::new(Array<%= n_dim %>::zeros((<%= untyped_args %>)))
+pub fn float<%= bits %>_array<%= n_dim %>_zeros(<%= typed_args %>) -> ExFloat<%= bits %>Array<%= n_dim %> {
+    ExFloat<%= bits %>Array<%= n_dim %>::new(Array<%= n_dim %>::zeros((<%= untyped_args %>)))
 }
 <% end %>
 
 // Array of ones
 #[rustler::nif]
-pub fn float64_array1_ones(n1: usize) -> ExFloat64Array1 {
-    ExFloat64Array1::new(Array1::ones(n1))
+pub fn float<%= bits %>_array1_ones(n1: usize) -> ExFloat<%= bits %>Array1 {
+    ExFloat<%= bits %>Array1::new(Array1::ones(n1))
 }
 <%= for n_dim <- 2..6 do %><% 
   typed_args = Enum.map(1..n_dim, fn i -> "n#{i}: usize" end) |> Enum.intersperse(", ")
   untyped_args = Enum.map(1..n_dim, fn i -> "n#{i}" end) |> Enum.intersperse(", ")
 %>
 #[rustler::nif]
-pub fn float64_array<%= n_dim %>_ones(<%= typed_args %>) -> ExFloat64Array<%= n_dim %> {
-    ExFloat64Array<%= n_dim %>::new(Array<%= n_dim %>::ones((<%= untyped_args %>)))
+pub fn float<%= bits %>_array<%= n_dim %>_ones(<%= typed_args %>) -> ExFloat<%= bits %>Array<%= n_dim %> {
+    ExFloat<%= bits %>Array<%= n_dim %>::new(Array<%= n_dim %>::ones((<%= untyped_args %>)))
+}
+<% end %><% end %>
+
+// Array builders - Complex numbers
+// --------------------------------
+
+<%= for bits <- [32, 64] do %>
+// Array of zeros
+#[rustler::nif]
+pub fn complex<%= bits %>_array1_zeros(n1: usize) -> ExComplex<%= bits %>Array1 {
+    ExComplex<%= bits %>Array1::new(Array1::zeros(n1))
+}
+<%= for n_dim <- 2..6 do %><% 
+  typed_args = Enum.map(1..n_dim, fn i -> "n#{i}: usize" end) |> Enum.intersperse(", ")
+  untyped_args = Enum.map(1..n_dim, fn i -> "n#{i}" end) |> Enum.intersperse(", ")
+%>
+#[rustler::nif]
+pub fn complex<%= bits %>_array<%= n_dim %>_zeros(<%= typed_args %>) -> ExComplex<%= bits %>Array<%= n_dim %> {
+    ExComplex<%= bits %>Array<%= n_dim %>::new(
+      Array<%= n_dim %>::zeros((<%= untyped_args %>))
+      .mapv(|_: f<%= bits %>| Complex::new(0.0, 0.0))
+    )
 }
 <% end %>
+
+// Array of ones
+#[rustler::nif]
+pub fn complex<%= bits %>_array1_ones(n1: usize) -> ExComplex<%= bits %>Array1 {
+    ExComplex<%= bits %>Array1::new(Array1::ones(n1))
+}
+<%= for n_dim <- 2..6 do %><% 
+  typed_args = Enum.map(1..n_dim, fn i -> "n#{i}: usize" end) |> Enum.intersperse(", ")
+  untyped_args = Enum.map(1..n_dim, fn i -> "n#{i}" end) |> Enum.intersperse(", ")
+%>
+#[rustler::nif]
+pub fn complex<%= bits %>_array<%= n_dim %>_ones(<%= typed_args %>) -> ExComplex<%= bits %>Array<%= n_dim %> {
+    ExComplex<%= bits %>Array<%= n_dim %>::new(
+      Array<%= n_dim %>::ones((<%= untyped_args %>))
+      .mapv(|_: f<%= bits %>| Complex::new(1.0, 0.0))
+    )
+}
+<% end %><% end %>
+
+// Partitions of an interval
+#[rustler::nif]
+pub fn float64_array1_linspace(start: f64, stop: f64, n: usize) -> ExFloat64Array1 {
+    let output_array: Array1<f64> = Array1::linspace(start, stop, n);
+    ExFloat64Array1::new(output_array) 
+}
+
+#[rustler::nif]
+pub fn float64_array1_geomspace(start: f64, stop: f64, n: usize) -> NifResult<ExFloat64Array1> {
+    match Array1::geomspace(start, stop, n) {
+        None => NifResult::Err(Error::BadArg),
+        Some(output_array) => NifResult::Ok(ExFloat64Array1::new(output_array))
+    }
+}
+
+#[rustler::nif]
+pub fn float64_array1_logspace(base: f64, start: f64, stop: f64, n: usize) -> ExFloat64Array1 {
+    let output_array: Array1<f64> = Array1::logspace(base, start, stop, n);
+    ExFloat64Array1::new(output_array) 
+}
+
+#[rustler::nif]
+pub fn float32_array1_linspace(start: f32, stop: f32, n: usize) -> ExFloat32Array1 {
+    let output_array: Array1<f32> = Array1::linspace(start, stop, n);
+    ExFloat32Array1::new(output_array) 
+}
+
+#[rustler::nif]
+pub fn float32_array1_geomspace(start: f32, stop: f32, n: usize) -> NifResult<ExFloat32Array1> {
+    match Array1::geomspace(start, stop, n) {
+        None => NifResult::Err(Error::BadArg),
+        Some(output_array) => NifResult::Ok(ExFloat32Array1::new(output_array))
+    }
+}
+
+#[rustler::nif]
+pub fn float32_array1_logspace(base: f32, start: f32, stop: f32, n: usize) -> ExFloat32Array1 {
+    let output_array: Array1<f32> = Array1::logspace(base, start, stop, n);
+    ExFloat32Array1::new(output_array) 
+}

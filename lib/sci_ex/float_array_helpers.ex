@@ -184,75 +184,7 @@ defmodule SciEx.FloatArrayHelpers do
     end
   end
 
-  defmacro defvectorizedbinop({op, meta, [a, b]} = call, ex_op, rs_op) do
-    cases =
-      for nr_of_bits <- [64, 32] do
-        for n_dim <- 1..6 do
-          array_module =
-            Module.concat([
-              "SciEx",
-              "Float#{nr_of_bits}",
-              "Array#{n_dim}"
-            ])
 
-          array_array =
-            quote do
-              {%unquote(array_module){}, %unquote(array_module){}} ->
-                SciEx.SciExNif.unquote(:"float#{nr_of_bits}_#{rs_op}_array1_array1")(
-                  unquote(a),
-                  unquote(b)
-                )
-            end
-
-          array_scalar =
-            quote do
-              {%unquote(array_module){}, number} when is_number(number) ->
-                SciEx.SciExNif.unquote(:"float#{nr_of_bits}_#{rs_op}_array1_scalar")(
-                  unquote(a),
-                  SciEx.FloatArrayHelpers.to_float(number)
-                )
-            end
-
-          scalar_array =
-            quote do
-              {number, %unquote(array_module){}} when is_number(number) ->
-                SciEx.SciExNif.unquote(:"float#{nr_of_bits}_#{rs_op}_scalar_array1")(
-                  SciEx.FloatArrayHelpers.to_float(number),
-                  unquote(b)
-                )
-            end
-
-          [array_array, array_scalar, scalar_array]
-        end
-      end
-
-    number_number_case =
-      quote do
-        {number1, number2} when is_number(number1) and is_number(number2) ->
-          apply(Kernel, unquote(op), [number1, number2])
-      end
-
-    cases = List.flatten([number_number_case | cases])
-
-    case_statement = {:case, meta, [{a, b}, [do: cases]]}
-
-    quote do
-      @spec unquote(ex_op)(SciEx.Types.float_value(), SciEx.Types.float_value()) ::
-              SciEx.Types.float_value()
-      def unquote(ex_op)(unquote(a), unquote(b)) do
-        unquote(case_statement)
-      end
-
-      @doc """
-      Operator `#{unquote(op)}`, which is equivalente to the `SciEx.#{unquote(ex_op)}/2` function.
-      """
-      @spec unquote(op)(SciEx.Types.float_value(), SciEx.Types.float_value()) ::
-              SciEx.Types.float_value()
-      def unquote(call) do
-        unquote(ex_op)(unquote(a), unquote(b))
-      end
-    end
-  end
 
   @doc """
   Define a function that takes array of 64-bit floats as the

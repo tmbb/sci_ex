@@ -38,6 +38,7 @@ defmodule SciEx do
 
   import Kernel, except: [+: 2, -: 2, *: 2, /: 2]
   import SciEx.FloatArrayHelpers
+  import SciEx.BinaryOperations
 
   @doc """
   Add two values (arrays or scalars).

@@ -6,25 +6,54 @@
 
 use crate::datatypes::*;
 
+// =========================================
+// Real numbers
+// =========================================
+<%= for bits <- [64, 32], {op_name, op_symbol} <- @operations, n_dim <- 1..6 do %>
+// -----------------------------------------
+// <%= n_dim %>D arrays
+// -----------------------------------------
+// <%= String.upcase(to_string(op_name)) %> for <%= n_dim %>D arrays and scalars
+#[rustler::nif]
+pub fn float<%= bits %>_<%= op_name %>_array<%= n_dim %>_array<%= n_dim %>(a: ExFloat<%= bits %>Array<%= n_dim %>, b: ExFloat<%= bits %>Array<%= n_dim %>) -> ExFloat<%= bits %>Array<%= n_dim %> {
+  ExFloat<%= bits %>Array<%= n_dim %>::new(&a.resource.0 <%= op_symbol %> &b.resource.0)
+}
+
+#[rustler::nif]
+pub fn float<%= bits %>_<%= op_name %>_array<%= n_dim %>_scalar(a: ExFloat<%= bits %>Array<%= n_dim %>, b: f<%= bits %>) -> ExFloat<%= bits %>Array<%= n_dim %> {
+  ExFloat<%= bits %>Array<%= n_dim %>::new(&a.resource.0 <%= op_symbol %> b)
+}
+
+#[rustler::nif]
+pub fn float<%= bits %>_<%= op_name %>_scalar_array<%= n_dim %>(a: f<%= bits %>, b: ExFloat<%= bits %>Array<%= n_dim %>) -> ExFloat<%= bits %>Array<%= n_dim %> {
+  ExFloat<%= bits %>Array<%= n_dim %>::new(a <%= op_symbol %> &b.resource.0)
+}
+<% end %>
+
+// =========================================
+// Complex numbers
+// =========================================
+<%= for bits <- [64, 32] do %><%= for {op_name, op_symbol} <- @operations do %>#[rustler::nif]
+pub fn complex<%= bits %>_<%= op_name %>_scalar_scalar(a: ExComplex<%= bits %>, b: ExComplex<%= bits %>) -> ExComplex<%= bits %> {
+  ExComplex<%= bits %>::new(a.resource.0 <%= op_symbol %> b.resource.0)
+}
 <%= for n_dim <- 1..6 do %>
 // -----------------------------------------
 // <%= n_dim %>D arrays
 // -----------------------------------------
-<%= for {op_name, op_symbol} <- @operations do %>
 // <%= String.upcase(to_string(op_name)) %> for <%= n_dim %>D arrays and scalars
 #[rustler::nif]
-pub fn float<%= @nr_of_bits %>_<%= op_name %>_array<%= n_dim %>_array<%= n_dim %>(a: ExFloat<%= @nr_of_bits %>Array<%= n_dim %>, b: ExFloat<%= @nr_of_bits %>Array<%= n_dim %>) -> ExFloat<%= @nr_of_bits %>Array<%= n_dim %> {
-  ExFloat<%= @nr_of_bits %>Array<%= n_dim %>::new(&a.resource.0 <%= op_symbol %> &b.resource.0)
+pub fn complex<%= bits %>_<%= op_name %>_array<%= n_dim %>_array<%= n_dim %>(a: ExComplex<%= bits %>Array<%= n_dim %>, b: ExComplex<%= bits %>Array<%= n_dim %>) -> ExComplex<%= bits %>Array<%= n_dim %> {
+  ExComplex<%= bits %>Array<%= n_dim %>::new(&a.resource.0 <%= op_symbol %> &b.resource.0)
 }
 
 #[rustler::nif]
-pub fn float<%= @nr_of_bits %>_<%= op_name %>_array<%= n_dim %>_scalar(a: ExFloat<%= @nr_of_bits %>Array<%= n_dim %>, b: f<%= @nr_of_bits %>) -> ExFloat<%= @nr_of_bits %>Array<%= n_dim %> {
-  ExFloat<%= @nr_of_bits %>Array<%= n_dim %>::new(&a.resource.0 <%= op_symbol %> b)
+pub fn complex<%= bits %>_<%= op_name %>_array<%= n_dim %>_scalar(a: ExComplex<%= bits %>Array<%= n_dim %>, b: ExComplex<%= bits %>) -> ExComplex<%= bits %>Array<%= n_dim %> {
+  ExComplex<%= bits %>Array<%= n_dim %>::new(&a.resource.0 <%= op_symbol %> b.resource.0)
 }
 
 #[rustler::nif]
-pub fn float<%= @nr_of_bits %>_<%= op_name %>_scalar_array<%= n_dim %>(a: f<%= @nr_of_bits %>, b: ExFloat<%= @nr_of_bits %>Array<%= n_dim %>) -> ExFloat<%= @nr_of_bits %>Array<%= n_dim %> {
-  ExFloat<%= @nr_of_bits %>Array<%= n_dim %>::new(a <%= op_symbol %> &b.resource.0)
+pub fn complex<%= bits %>_<%= op_name %>_scalar_array<%= n_dim %>(a: ExComplex<%= bits %>, b: ExComplex<%= bits %>Array<%= n_dim %>) -> ExComplex<%= bits %>Array<%= n_dim %> {
+  ExComplex<%= bits %>Array<%= n_dim %>::new(a.resource.0 <%= op_symbol %> &b.resource.0)
 }
-<% end %>
-<% end %>
+<% end %><% end %><% end %>
