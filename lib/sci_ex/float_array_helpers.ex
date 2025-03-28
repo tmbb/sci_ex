@@ -1,4 +1,4 @@
-defmodule SciEx.ArrayHelpers do
+defmodule SciEx.FloatArrayHelpers do
   @moduledoc false
 
   def to_float(x) when is_float(x), do: x
@@ -209,7 +209,7 @@ defmodule SciEx.ArrayHelpers do
               {%unquote(array_module){}, number} when is_number(number) ->
                 SciEx.SciExNif.unquote(:"float#{nr_of_bits}_#{rs_op}_array1_scalar")(
                   unquote(a),
-                  SciEx.ArrayHelpers.to_float(number)
+                  SciEx.FloatArrayHelpers.to_float(number)
                 )
             end
 
@@ -217,7 +217,7 @@ defmodule SciEx.ArrayHelpers do
             quote do
               {number, %unquote(array_module){}} when is_number(number) ->
                 SciEx.SciExNif.unquote(:"float#{nr_of_bits}_#{rs_op}_scalar_array1")(
-                  SciEx.ArrayHelpers.to_float(number),
+                  SciEx.FloatArrayHelpers.to_float(number),
                   unquote(b)
                 )
             end

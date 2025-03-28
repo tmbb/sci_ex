@@ -37,7 +37,7 @@ defmodule SciEx do
   """
 
   import Kernel, except: [+: 2, -: 2, *: 2, /: 2]
-  import SciEx.ArrayHelpers
+  import SciEx.FloatArrayHelpers
 
   @doc """
   Add two values (arrays or scalars).

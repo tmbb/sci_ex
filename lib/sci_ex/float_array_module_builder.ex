@@ -11,7 +11,7 @@ defmodule SciEx.FloatArrayModuleBuilder do
     ones_arg_types = zeros_arg_types
 
     quote do
-      defstruct resource: nil
+      defstruct n_dims: nil, resource: nil
 
       @type t :: %__MODULE__{}
 
