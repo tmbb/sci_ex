@@ -78,7 +78,6 @@ defmodule SciEx.FloatArrayHelpers do
 
     case_statement = {:case, [], [arg, [do: cases]]}
 
-
     quote do
       def unquote(ex_f)(unquote_splicing(args), opts \\ []) do
         unquote(parallel_var) =
@@ -146,9 +145,9 @@ defmodule SciEx.FloatArrayHelpers do
           array_array_case =
             quote do
               {%unquote(array_module){}, %unquote(array_module){}} ->
-                SciEx.SciExNif.unquote(:"#{prefix}_float#{bits}_#{rs_f}_array#{n_dim}_array#{n_dim}")(
-                  unquote_splicing(function_args)
-                )
+                SciEx.SciExNif.unquote(
+                  :"#{prefix}_float#{bits}_#{rs_f}_array#{n_dim}_array#{n_dim}"
+                )(unquote_splicing(function_args))
             end
 
           [
@@ -169,7 +168,6 @@ defmodule SciEx.FloatArrayHelpers do
 
     case_statement = {:case, [], [match_expr, [do: cases]]}
 
-
     quote do
       def unquote(ex_f)(unquote_splicing(args), opts \\ []) do
         unquote(parallel_var) =
@@ -183,8 +181,6 @@ defmodule SciEx.FloatArrayHelpers do
       end
     end
   end
-
-
 
   @doc """
   Define a function that takes array of 64-bit floats as the

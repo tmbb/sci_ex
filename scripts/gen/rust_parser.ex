@@ -16,6 +16,11 @@ defmodule SciEx.Gen.RustParser do
     |> optional(ascii_string([?a..?z, ?A..?Z, ?0..?9, ?_], min: 1))
     |> reduce({Enum, :join, [""]})
 
+  rust_type =
+    ascii_string([?a..?z, ?A..?Z], 1)
+    |> optional(ascii_string([?a..?z, ?A..?Z, ?0..?9, ?_, ?>, ?<], min: 1))
+    |> reduce({Enum, :join, [""]})
+
   rust_function_name = rust_identifier
 
   any_char = utf8_char([])
@@ -33,7 +38,7 @@ defmodule SciEx.Gen.RustParser do
     optional(
       skip_ws.([
         string(":"),
-        unwrap_and_tag(rust_identifier, :type)
+        unwrap_and_tag(rust_type, :type)
       ])
     )
   ])
@@ -59,7 +64,7 @@ defmodule SciEx.Gen.RustParser do
       tag(arguments, :arguments),
       string(")"),
       string("->"),
-      unwrap_and_tag(rust_identifier, :type)
+      unwrap_and_tag(rust_type, :type)
     ])
     |> reduce({:ignore_naked_strings, []})
     |> reduce({:build_function, []})
@@ -112,7 +117,7 @@ defmodule SciEx.Gen.RustParser do
   end
 
   def example() do
-    path = "priv/rust_generator/rust_modules/f64_api.rs"
+    path = "scripts/rust_generator/rust_modules/f64_api.rs"
     _decls = extract_functions_from_file!(path)
   end
 end

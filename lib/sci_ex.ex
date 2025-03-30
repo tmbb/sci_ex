@@ -3,6 +3,13 @@ defmodule SciEx do
   Documentation for `SciEx`.
   """
 
+  @type parallelization_strategy() ::
+              :always_parallel
+              | :never_parallel
+              | {:size_cutoff, integer()}
+
+  @type options() :: [parallel: parallelization_strategy()]
+
   # This cutoff was determined experimentally from benchmarks.
   # It gives at leat a 2x speedup for most vectorized functions
   # for input arrays of size > 100_000.
@@ -12,13 +19,14 @@ defmodule SciEx do
   #
   # See the benchmarks in the 'benchmarks/parallel_impl.exs'.
 
-  @default_parallellization_strategy  {:size_cutoff, 100_000}
+  @default_parallellization_strategy {:size_cutoff, 100_000}
 
   rust_std_lib_link = fn module, name ->
     "[`#{module}::#{name}()`](https://doc.rust-lang.org/std/primitive.f64.html#method.#{name})"
   end
 
-  std_lib_binding_message = fn name -> """
+  std_lib_binding_message = fn name ->
+    """
     Binds the #{rust_std_lib_link.("f64", name)} (for 64-bit floating point numbers)
     and the #{rust_std_lib_link.("f32", name)} (for 32-bit floating point numbers).
     This function is vectorized.
@@ -37,15 +45,17 @@ defmodule SciEx do
   """
 
   import Kernel, except: [+: 2, -: 2, *: 2, /: 2]
-  import SciEx.FloatArrayHelpers
+  import SciEx.ComplexArrayHelpers
   import SciEx.BinaryOperations
+
+  alias SciEx.Types
 
   @doc """
   Add two values (arrays or scalars).
   If both arguments are arrays, this function implements
   element-wise subtraction.
   """
-
+  @spec Types.numeric_value() + Types.numeric_value() :: Types.numeric_value()
   defvectorizedbinop(a + b, :add, :add)
 
   @doc """
@@ -53,7 +63,7 @@ defmodule SciEx do
   If both arguments are arrays, this function implements
   element-wise subtraction.
   """
-
+  @spec Types.numeric_value() - Types.numeric_value() :: Types.numeric_value()
   defvectorizedbinop(a - b, :subtract, :subtract)
 
   @doc """
@@ -61,7 +71,7 @@ defmodule SciEx do
   If both arguments are arrays, this function implements
   element-wise multiplication.
   """
-
+  @spec Types.numeric_value() * Types.numeric_value() :: Types.numeric_value()
   defvectorizedbinop(a * b, :multiply, :multiply)
 
   @doc """
@@ -71,7 +81,7 @@ defmodule SciEx do
 
   Raises an error in case of division by zero.
   """
-
+  @spec Types.numeric_value() / Types.numeric_value() :: Types.numeric_value()
   defvectorizedbinop(a / b, :divide, :divide)
 
   @doc """
@@ -79,6 +89,7 @@ defmodule SciEx do
 
   This function always returns the precise result.
   """
+  @spec floor(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:floor, :floor, x, [x], prefix: "math")
 
   @doc """
@@ -86,6 +97,7 @@ defmodule SciEx do
 
   This function always returns the precise result.
   """
+  @spec ceil(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:ceil, :ceil, x, [x], prefix: "math")
 
   @doc """
@@ -94,6 +106,7 @@ defmodule SciEx do
 
   This function always returns the precise result.
   """
+  @spec round(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:round, :round, x, [x], prefix: "math")
 
   @doc """
@@ -104,6 +117,7 @@ defmodule SciEx do
 
   #{std_lib_binding_message.(:round)}
   """
+  @spec round_ties_even(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:round_ties_even, :round_ties_even, x, [x], prefix: "math")
 
   @doc """
@@ -114,6 +128,7 @@ defmodule SciEx do
 
   #{std_lib_binding_message.(:trunc)}
   """
+  @spec trunc(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:trunc, :trunc, x, [x], prefix: "math")
 
   @doc """
@@ -123,6 +138,7 @@ defmodule SciEx do
 
   #{std_lib_binding_message.(:fract)}
   """
+  @spec fract(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:fract, :fract, x, [x], prefix: "math")
 
   @doc """
@@ -132,7 +148,8 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  defvectorized1(:exp, :exp, x, [x], prefix: "math")
+  @spec exp(Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized1(:exp, :exp, x, [x], prefix: "math", complex: true)
 
   @doc """
   Returns `2^x`.
@@ -141,6 +158,7 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
+  @spec exp2(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:exp2, :exp2, x, [x], prefix: "math")
 
   @doc """
@@ -153,7 +171,8 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  defvectorized1(:ln, :ln, x, [x], prefix: "math")
+  @spec ln(Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized1(:ln, :ln, x, [x], prefix: "math", complex: true)
 
   @doc """
   Returns the base 2 logarithm of the number.
@@ -165,6 +184,7 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
+  @spec log2(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:log2, :log2, x, [x], prefix: "math")
 
   @doc """
@@ -177,6 +197,7 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
+  @spec log10(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:log10, :log10, x, [x], prefix: "math")
 
   @doc """
@@ -186,7 +207,8 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  defvectorized1(:cos, :cos, x, [x], prefix: "math")
+  @spec cos(Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized1(:cos, :cos, x, [x], prefix: "math", complex: true)
 
   @doc """
   Sine function.
@@ -195,7 +217,8 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  defvectorized1(:sin, :sin, x, [x], prefix: "math")
+  @spec sin(Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized1(:sin, :sin, x, [x], prefix: "math", complex: true)
 
   @doc """
   Tangent function.
@@ -204,7 +227,8 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  defvectorized1(:tan, :tan, x, [x], prefix: "math")
+  @spec tan(Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized1(:tan, :tan, x, [x], prefix: "math", complex: true)
 
   @doc """
   Inverse cosine function.
@@ -213,7 +237,8 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  defvectorized1(:acos, :acos, x, [x], prefix: "math")
+  @spec acos(Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized1(:acos, :acos, x, [x], prefix: "math", complex: true)
 
   @doc """
   Inverse sine function.
@@ -222,7 +247,8 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  defvectorized1(:asin, :asin, x, [x], prefix: "math")
+  @spec asin(Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized1(:asin, :asin, x, [x], prefix: "math", complex: true)
 
   @doc """
   Inverse tangent function.
@@ -231,13 +257,15 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  defvectorized1(:atan, :atan, x, [x], prefix: "math")
+  @spec atan(Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized1(:atan, :atan, x, [x], prefix: "math", complex: true)
 
   @doc """
   TODO
 
   #{std_lib_binding_message.(:exp_m1)}
   """
+  @spec atan(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:exp_m1, :exp_m1, x, [x], prefix: "math")
 
   @doc """
@@ -247,7 +275,8 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  defvectorized1(:cosh, :cosh, x, [x], prefix: "math")
+  @spec cosh(Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized1(:cosh, :cosh, x, [x], prefix: "math", complex: true)
 
   @doc """
   Hyperbolic sine function.
@@ -256,7 +285,8 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  defvectorized1(:sinh, :sinh, x, [x], prefix: "math")
+  @spec sinh(Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized1(:sinh, :sinh, x, [x], prefix: "math", complex: true)
 
   @doc """
   Hyperbolic tangent function.
@@ -265,7 +295,8 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  defvectorized1(:tanh, :tanh, x, [x], prefix: "math")
+  @spec tanh(Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized1(:tanh, :tanh, x, [x], prefix: "math", complex: true)
 
   @doc """
   Inverse hyperbolic cosine function.
@@ -274,7 +305,8 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  defvectorized1(:acosh, :acosh, x, [x], prefix: "math")
+  @spec acosh(Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized1(:acosh, :acosh, x, [x], prefix: "math", complex: true)
 
   @doc """
   Inverse hyperbolic sine function.
@@ -283,7 +315,8 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  defvectorized1(:asinh, :asinh, x, [x], prefix: "math")
+  @spec asinh(Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized1(:asinh, :asinh, x, [x], prefix: "math", complex: true)
 
   @doc """
   Inverse hyperbolic tangent function.
@@ -292,20 +325,23 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  defvectorized1(:atanh, :atanh, x, [x], prefix: "math")
+  @spec atanh(Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized1(:atanh, :atanh, x, [x], prefix: "math", complex: true)
 
   @doc """
   TODO
 
   #{std_lib_binding_message.(:sqrt)}
   """
-  defvectorized1(:sqrt, :sqrt, x, [x], prefix: "math")
+  @spec sqrt(Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized1(:sqrt, :sqrt, x, [x], prefix: "math", complex: true)
 
   @doc """
   TODO
 
   #{std_lib_binding_message.(:j0)}
   """
+  @spec j0(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:j0, :j0, x, [x], prefix: "math")
 
   @doc """
@@ -313,6 +349,7 @@ defmodule SciEx do
 
   #{std_lib_binding_message.(:j1)}
   """
+  @spec j1(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:j1, :j1, x, [x], prefix: "math")
 
   @doc """
@@ -320,6 +357,7 @@ defmodule SciEx do
 
   #{std_lib_binding_message.(:y0)}
   """
+  @spec y0(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:y0, :y0, x, [x], prefix: "math")
 
   @doc """
@@ -327,6 +365,7 @@ defmodule SciEx do
 
   #{std_lib_binding_message.(:y1)}
   """
+  @spec y1(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:y1, :y1, x, [x], prefix: "math")
 
   @doc """
@@ -334,6 +373,7 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
+  @spec erf(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:erf, :erf, x, [x], prefix: "math")
 
   @doc """
@@ -341,6 +381,7 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
+  @spec erfc(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:erfc, :erfc, x, [x], prefix: "math")
 
   @doc """
@@ -348,11 +389,13 @@ defmodule SciEx do
 
   #{std_lib_binding_message.(:logp1)}
   """
+  @spec ln_1p(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:ln_1p, :log1p, x, [x], prefix: "math")
 
   @doc """
   TODO
   """
+  @spec lgamma(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:lgamma, :lgamma, x, [x], prefix: "math")
 
   @doc """
@@ -360,11 +403,13 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
+  @spec cube_root(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:cube_root, :cbrt, x, [x], prefix: "math")
 
   @doc """
   TODO
   """
+  @spec abs(Types.float_value(), options()) :: Types.float_value()
   defvectorized1(:abs, :abs, x, [x], prefix: "math")
 
   @doc """
@@ -380,26 +425,31 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  defvectorized2(:log, :log, [x, y], [x, y], prefix: "math")
+  @spec log(Types.numeric_value(), Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized2(:log, :log, [x, y], [x, y], prefix: "math", complex: true)
 
   @doc """
   TODO
   """
-  defvectorized2(:powf, :powf, [x, y], [x, y], prefix: "math")
+  @spec powf(Types.numeric_value(), Types.numeric_value(), options()) :: Types.numeric_value()
+  defvectorized2(:powf, :powf, [x, y], [x, y], prefix: "math", complex: true)
 
   @doc """
   TODO
   """
+  @spec hypot(Types.float_value(), Types.float_value(), options()) :: Types.float_value()
   defvectorized2(:hypot, :hypot, [x, y], [x, y], prefix: "math")
 
   @doc """
   TODO
   """
+  @spec div_euclid(Types.float_value(), Types.float_value(), options()) :: Types.float_value()
   defvectorized2(:div_euclid, :div_euclid, [x, y], [x, y], prefix: "math")
 
   @doc """
   TODO
   """
+  @spec rem_euclid(Types.float_value(), Types.float_value(), options()) :: Types.float_value()
   defvectorized2(:rem_euclid, :rem_euclid, [x, y], [x, y], prefix: "math")
 
   # Parallelization utilities
@@ -431,6 +481,7 @@ defmodule SciEx do
   """
   def parallel(strategy, fun) do
     old_parallelization_strategy = Process.get(:"$sci_ex_parallelization_strategy")
+
     try do
       put_parallelization_strategy(strategy)
       fun.()

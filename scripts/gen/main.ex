@@ -1,42 +1,43 @@
 defmodule SciEx.Gen.Main do
-  alias SciEx.Gen.RustModule
+  alias SciEx.Gen.RustFloatModule
+  alias SciEx.Gen.RustComplexModule
   alias SciEx.Gen.Injector
 
   require EEx
 
-  @external_resource "priv/rust_generator/templates/array_comparisons.rs"
+  @external_resource "scripts/rust_generator/templates/array_comparisons.rs"
 
   EEx.function_from_file(
     :def,
     :array_comparisons_rs,
-    "priv/rust_generator/templates/array_comparisons.rs",
+    "scripts/rust_generator/templates/array_comparisons.rs",
     []
   )
 
-  @external_resource "priv/rust_generator/templates/vectorized_function.rs"
+  @external_resource "scripts/rust_generator/templates/vectorized_function.rs"
 
   EEx.function_from_file(
     :def,
     :fft_rs,
-    "priv/rust_generator/templates/fft_float.rs",
+    "scripts/rust_generator/templates/fft_float.rs",
     [:assigns]
   )
 
-  @external_resource "priv/rust_generator/templates/array_builders.rs"
+  @external_resource "scripts/rust_generator/templates/array_builders.rs"
 
   EEx.function_from_file(
     :def,
     :array_builders_rs,
-    "priv/rust_generator/templates/array_builders.rs",
+    "scripts/rust_generator/templates/array_builders.rs",
     []
   )
 
-  @external_resource "priv/rust_generator/templates/array_binary_operations.rs"
+  @external_resource "scripts/rust_generator/templates/array_binary_operations.rs"
 
   EEx.function_from_file(
     :def,
     :array_binary_operations_rs,
-    "priv/rust_generator/templates/array_binary_operations.rs",
+    "scripts/rust_generator/templates/array_binary_operations.rs",
     [:assigns]
   )
 
@@ -49,7 +50,7 @@ defmodule SciEx.Gen.Main do
 
   def generate_math_float_code(bits) when bits in [64, 32] do
     # Standardized naming scheme helps keep the source data tidy
-    input_path = "priv/rust_generator/rust_modules/f#{bits}_api.rs"
+    input_path = "scripts/rust_generator/rust_modules/f#{bits}_api.rs"
     # When we generate it for real, update this to the real path
     output_path = "native/sci_ex_nif/src/math_float#{bits}.rs"
 
@@ -58,7 +59,7 @@ defmodule SciEx.Gen.Main do
     type = "f#{bits}"
 
     # Create our rust/rustler module
-    math_float_module = %RustModule{
+    math_complex_module = %RustFloatModule{
       prefix: "math",
       type: "float",
       bits: bits,
@@ -66,8 +67,8 @@ defmodule SciEx.Gen.Main do
     }
 
     # Add vectorized functions to the module
-    math_float_module = RustModule.add_vectorized_functions_from_file(
-      math_float_module,
+    math_complex_module = RustFloatModule.add_vectorized_functions_from_file(
+      math_complex_module,
       input_path,
       # TODO: check this for conflicts
       rename_self_to: "x",
@@ -76,16 +77,16 @@ defmodule SciEx.Gen.Main do
       filter: fn f -> f.result_type == type end
     )
 
-    math_float_module = RustModule.add_vectorized_functions_from_file(
-      math_float_module,
-      "priv/rust_generator/rust_modules/f#{bits}_libm_api.rs",
+    math_complex_module = RustFloatModule.add_vectorized_functions_from_file(
+      math_complex_module,
+      "scripts/rust_generator/rust_modules/f#{bits}_libm_api.rs",
       rs_module: "Libm::<f#{bits}>"
     )
 
-    RustModule.to_rust_file(math_float_module, output_path)
+    RustFloatModule.to_rust_file(math_complex_module, output_path)
 
-    RustModule.to_ex_test_file(
-      math_float_module,
+    RustFloatModule.to_ex_test_file(
+      math_complex_module,
       test_path,
       overrides: %{
         "cbrt" => "cube_root"
@@ -100,9 +101,53 @@ defmodule SciEx.Gen.Main do
       ]
     )
 
-    RustModule.to_elixir_nif_file(
-      math_float_module,
+    RustFloatModule.to_elixir_nif_file(
+      math_complex_module,
       "math_float#{bits}",
+      "lib/sci_ex/sci_ex_nif.ex"
+    )
+  end
+
+
+  def generate_math_complex_code(bits) when bits in [64, 32] do
+    # Standardized naming scheme helps keep the source data tidy
+    input_path = "scripts/rust_generator/rust_modules/complex#{bits}_api.rs"
+    # When we generate it for real, update this to the real path
+    output_path = "native/sci_ex_nif/src/math_complex#{bits}.rs"
+
+    test_path = "test/sci_ex_test/complex_#{bits}/complex_math_functions_test.exs"
+
+    type = "Complex<f#{bits}>"
+
+    # Create our rust/rustler module
+    math_complex_module = %RustComplexModule{
+      prefix: "math",
+      type: "complex",
+      bits: bits,
+      extra_imports: ["use ndrustfft::Complex;"]
+    }
+
+    # Add vectorized functions to the module
+    math_complex_module = RustComplexModule.add_vectorized_functions_from_file(
+      math_complex_module,
+      input_path,
+      # TODO: check this for conflicts
+      rename_self_to: "z",
+      assign_type_to_self: type,
+      rs_module: "Complex::<f#{bits}>",
+      filter: fn f -> f.result_type == type end
+    )
+
+    RustComplexModule.to_rust_file(math_complex_module, output_path)
+
+    RustFloatModule.to_ex_test_file(
+      math_complex_module,
+      test_path
+    )
+
+    RustFloatModule.to_elixir_nif_file(
+      math_complex_module,
+      "math_complex#{bits}",
       "lib/sci_ex/sci_ex_nif.ex"
     )
   end
@@ -254,9 +299,13 @@ defmodule SciEx.Gen.Main do
     # Arithmetic operations on arrays
     generate_array_binary_operations()
 
-    # # Generate 64-bit and 32-bit code
+    # Generate 64-bit and 32-bit code
     generate_math_float_code(64)
     generate_math_float_code(32)
+
+    # Generate code for complex number operations
+    generate_math_complex_code(64)
+    generate_math_complex_code(32)
 
     generate_array_comparisons()
 

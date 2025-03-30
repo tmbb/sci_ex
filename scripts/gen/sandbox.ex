@@ -35,48 +35,48 @@
 
 #   require EEx
 
-#   @external_resource "priv/rust_generator/templates/math_functions.rs"
+#   @external_resource "scripts/rust_generator/templates/math_functions.rs"
 
 #   EEx.function_from_file(
 #     :def,
 #     :math_functions_rs,
-#     "priv/rust_generator/templates/math_functions.rs",
+#     "scripts/rust_generator/templates/math_functions.rs",
 #     [:assigns]
 #   )
 
-  # @external_resource "priv/rust_generator/templates/array_comparisons.rs"
+  # @external_resource "scripts/rust_generator/templates/array_comparisons.rs"
 
   # EEx.function_from_file(
   #   :def,
   #   :array_comparisons_rs,
-  #   "priv/rust_generator/templates/array_comparisons.rs",
+  #   "scripts/rust_generator/templates/array_comparisons.rs",
   #   [:assigns]
   # )
 
-#   @external_resource "priv/rust_generator/templates/array_builders.rs"
+#   @external_resource "scripts/rust_generator/templates/array_builders.rs"
 
 #   EEx.function_from_file(
 #     :def,
 #     :array_builders_rs,
-#     "priv/rust_generator/templates/array_builders.rs",
+#     "scripts/rust_generator/templates/array_builders.rs",
 #     []
 #   )
 
-#   @external_resource "priv/rust_generator/templates/sci_ex_test_math_functions_test.exs"
+#   @external_resource "scripts/rust_generator/templates/sci_ex_test_math_functions_test.exs"
 
 #   EEx.function_from_file(
 #     :def,
 #     :sci_ex_test_math_functions_test_exs,
-#     "priv/rust_generator/templates/sci_ex_test_math_functions_test.exs",
+#     "scripts/rust_generator/templates/sci_ex_test_math_functions_test.exs",
 #     [:assigns]
 #   )
 
-#   @external_resource "priv/rust_generator/templates/sci_ex_test_math_functions_test.exs"
+#   @external_resource "scripts/rust_generator/templates/sci_ex_test_math_functions_test.exs"
 
 #   EEx.function_from_file(
 #     :def,
 #     :array_binary_operations_rs,
-#     "priv/rust_generator/templates/array_binary_operations.rs",
+#     "scripts/rust_generator/templates/array_binary_operations.rs",
 #     [:assigns]
 #   )
 
@@ -171,7 +171,7 @@
 #     # try to determine which ones there are from the source, we'll just hardcode
 #     # them here (the rust compiler warns us of invalid functions with a compile
 #     # error; I've just followed the errors while hardcoding the functions)
-#     f64_std_code = File.read!("priv/rust_generator/rust_modules/f64.rs")
+#     f64_std_code = File.read!("scripts/rust_generator/rust_modules/f64.rs")
 #     f64_all_std_declarations = extract_unary_function_declarations!(f64_std_code)
 #     f64_std_declarations = Enum.filter(f64_all_std_declarations, fn decl ->
 #       # Remove the `std` functions that depend on unstable features.
@@ -179,7 +179,7 @@
 #       decl[:type] == "f64" and decl[:function] not in ["gamma", "erf", "erfc", "abs_sub"]
 #     end)
 
-#     f32_std_code = File.read!("priv/rust_generator/rust_modules/f32.rs")
+#     f32_std_code = File.read!("scripts/rust_generator/rust_modules/f32.rs")
 #     f32_all_std_declarations = extract_unary_function_declarations!(f32_std_code)
 #     f32_std_declarations = Enum.filter(f32_all_std_declarations, fn decl ->
 #       # Remove the `std` functions that depend on unstable features.

@@ -33,48 +33,98 @@ defmodule SciEx.ComplexArrayHelpers do
     prefix = Keyword.fetch!(opts, :prefix)
     bit_values = Keyword.get(opts, :bits, [64, 32])
     n_dims = Keyword.get(opts, :n_dims, 6)
+    float? = Keyword.get(opts, :float, true)
+    complex? = Keyword.get(opts, :complex, false)
     parallel_var = Macro.var(:parallel, __MODULE__)
 
     function_args = args ++ [parallel_var]
 
-    cases =
-      for bits <- bit_values do
-        for n_dim <- 1..n_dims do
-          array_module =
-            Module.concat([
-              "SciEx",
-              "Complex#{bits}",
-              "Array#{n_dim}"
-            ])
+    float_cases =
+      for bits <- bit_values, n_dim <- 1..n_dims do
+        array_module =
+          Module.concat([
+            "SciEx",
+            "Float#{bits}",
+            "Array#{n_dim}"
+          ])
 
-          maybe_scalar_case =
-            if n_dim == 1 do
-              quote do
-                number when is_number(number) ->
-                  SciEx.SciExNif.unquote(:"#{prefix}_complex#{bits}_#{rs_f}_scalar")(
-                    unquote_splicing(args)
-                  )
-              end
-            else
-              []
-            end
-
-          array_case =
+        maybe_scalar_case =
+          if n_dim == 1 do
             quote do
-              %unquote(array_module){} ->
-                SciEx.SciExNif.unquote(:"#{prefix}_complex#{bits}_#{rs_f}_array#{n_dim}")(
-                  unquote_splicing(function_args)
+              number when is_number(number) ->
+                SciEx.SciExNif.unquote(:"#{prefix}_float#{bits}_#{rs_f}_scalar")(
+                  unquote_splicing(args)
                 )
             end
+          else
+            []
+          end
 
-          [maybe_scalar_case, array_case]
-        end
+        array_case =
+          quote do
+            %unquote(array_module){} ->
+              SciEx.SciExNif.unquote(:"#{prefix}_float#{bits}_#{rs_f}_array#{n_dim}")(
+                unquote_splicing(function_args)
+              )
+          end
+
+        [maybe_scalar_case, array_case]
       end
 
-    cases = List.flatten(cases)
+    complex_cases =
+      for bits <- bit_values, n_dim <- 1..n_dims do
+        scalar_module =
+          Module.concat([
+            "SciEx",
+            "Complex#{bits}"
+          ])
+
+        array_module =
+          Module.concat([
+            "SciEx",
+            "Complex#{bits}",
+            "Array#{n_dim}"
+          ])
+
+        maybe_scalar_case =
+          if n_dim == 1 do
+            quote do
+              %unquote(scalar_module){} ->
+                SciEx.SciExNif.unquote(:"#{prefix}_complex#{bits}_#{rs_f}_scalar")(
+                  unquote_splicing(args)
+                )
+            end
+          else
+            []
+          end
+
+        array_case =
+          quote do
+            %unquote(array_module){} ->
+              SciEx.SciExNif.unquote(:"#{prefix}_complex#{bits}_#{rs_f}_array#{n_dim}")(
+                unquote_splicing(function_args)
+              )
+          end
+
+        [maybe_scalar_case, array_case]
+      end
+
+    cases =
+      case {float?, complex?} do
+        {true, true} ->
+          List.flatten([float_cases, complex_cases])
+
+        {true, false} ->
+          List.flatten(float_cases)
+
+        {false, true} ->
+          List.flatten(complex_cases)
+
+        {false, false} ->
+          raise "No types given"
+      end
 
     case_statement = {:case, [], [arg, [do: cases]]}
-
 
     quote do
       def unquote(ex_f)(unquote_splicing(args), opts \\ []) do
@@ -98,66 +148,138 @@ defmodule SciEx.ComplexArrayHelpers do
     prefix = Keyword.fetch!(opts, :prefix)
     bit_values = Keyword.get(opts, :bits, [64, 32])
     n_dims = Keyword.get(opts, :n_dims, 6)
+    float? = Keyword.get(opts, :float, true)
+    complex? = Keyword.get(opts, :complex, false)
     parallel_var = Macro.var(:parallel, __MODULE__)
 
     function_args = args ++ [parallel_var]
 
-    cases =
-      for bits <- bit_values do
-        for n_dim <- 1..n_dims do
-          array_module =
-            Module.concat([
-              "SciEx",
-              "Complex#{bits}",
-              "Array#{n_dim}"
-            ])
+    float_cases =
+      for bits <- bit_values, n_dim <- 1..n_dims do
+        array_module =
+          Module.concat([
+            "SciEx",
+            "Float#{bits}",
+            "Array#{n_dim}"
+          ])
 
-          maybe_scalar_scalar_case =
-            if n_dim == 1 do
-              quote do
-                {x1, x2} when is_number(x1) and is_number(x2) ->
-                  SciEx.SciExNif.unquote(:"#{prefix}_complex#{bits}_#{rs_f}_scalar_scalar")(
-                    unquote_splicing(args)
-                  )
-              end
-            else
-              []
-            end
-
-          scalar_array_case =
+        maybe_scalar_scalar_case =
+          if n_dim == 1 do
             quote do
-              {x1, %unquote(array_module){}} when is_number(x1) ->
-                SciEx.SciExNif.unquote(:"#{prefix}_complex#{bits}_#{rs_f}_scalar_array#{n_dim}")(
-                  unquote_splicing(function_args)
+              {x1, x2} when is_number(x1) and is_number(x2) ->
+                SciEx.SciExNif.unquote(:"#{prefix}_float#{bits}_#{rs_f}_scalar_scalar")(
+                  unquote_splicing(args)
                 )
             end
+          else
+            []
+          end
 
-          array_scalar_case =
-            quote do
-              {%unquote(array_module){}, x2} when is_number(x2) ->
-                SciEx.SciExNif.unquote(:"#{prefix}_complex#{bits}_#{rs_f}_array#{n_dim}_scalar")(
-                  unquote_splicing(function_args)
-                )
-            end
+        scalar_array_case =
+          quote do
+            {x1, %unquote(array_module){}} when is_number(x1) ->
+              SciEx.SciExNif.unquote(:"#{prefix}_float#{bits}_#{rs_f}_scalar_array#{n_dim}")(
+                unquote_splicing(function_args)
+              )
+          end
 
-          array_array_case =
-            quote do
-              {%unquote(array_module){}, %unquote(array_module){}} ->
-                SciEx.SciExNif.unquote(:"#{prefix}_complex#{bits}_#{rs_f}_array#{n_dim}_array#{n_dim}")(
-                  unquote_splicing(function_args)
-                )
-            end
+        array_scalar_case =
+          quote do
+            {%unquote(array_module){}, x2} when is_number(x2) ->
+              SciEx.SciExNif.unquote(:"#{prefix}_float#{bits}_#{rs_f}_array#{n_dim}_scalar")(
+                unquote_splicing(function_args)
+              )
+          end
 
-          [
-            maybe_scalar_scalar_case,
-            scalar_array_case,
-            array_scalar_case,
-            array_array_case
-          ]
-        end
+        array_array_case =
+          quote do
+            {%unquote(array_module){}, %unquote(array_module){}} ->
+              SciEx.SciExNif.unquote(
+                :"#{prefix}_float#{bits}_#{rs_f}_array#{n_dim}_array#{n_dim}"
+              )(unquote_splicing(function_args))
+          end
+
+        [
+          maybe_scalar_scalar_case,
+          scalar_array_case,
+          array_scalar_case,
+          array_array_case
+        ]
       end
 
-    cases = List.flatten(cases)
+    complex_cases =
+      for bits <- bit_values, n_dim <- 1..n_dims do
+        scalar_module =
+          Module.concat([
+            "SciEx",
+            "Complex#{bits}"
+          ])
+
+        array_module =
+          Module.concat([
+            "SciEx",
+            "Complex#{bits}",
+            "Array#{n_dim}"
+          ])
+
+        maybe_scalar_scalar_case =
+          if n_dim == 1 do
+            quote do
+              {%unquote(scalar_module){}, %unquote(scalar_module){}} ->
+                SciEx.SciExNif.unquote(:"#{prefix}_complex#{bits}_#{rs_f}_scalar_scalar")(
+                  unquote_splicing(args)
+                )
+            end
+          else
+            []
+          end
+
+        scalar_array_case =
+          quote do
+            {%unquote(scalar_module){}, %unquote(array_module){}} ->
+              SciEx.SciExNif.unquote(:"#{prefix}_complex#{bits}_#{rs_f}_scalar_array#{n_dim}")(
+                unquote_splicing(function_args)
+              )
+          end
+
+        array_scalar_case =
+          quote do
+            {%unquote(array_module){}, %unquote(scalar_module){}} ->
+              SciEx.SciExNif.unquote(:"#{prefix}_complex#{bits}_#{rs_f}_array#{n_dim}_scalar")(
+                unquote_splicing(function_args)
+              )
+          end
+
+        array_array_case =
+          quote do
+            {%unquote(array_module){}, %unquote(array_module){}} ->
+              SciEx.SciExNif.unquote(
+                :"#{prefix}_complex#{bits}_#{rs_f}_array#{n_dim}_array#{n_dim}"
+              )(unquote_splicing(function_args))
+          end
+
+        [
+          maybe_scalar_scalar_case,
+          scalar_array_case,
+          array_scalar_case,
+          array_array_case
+        ]
+      end
+
+    cases =
+      case {float?, complex?} do
+        {true, true} ->
+          List.flatten([float_cases, complex_cases])
+
+        {true, false} ->
+          List.flatten(float_cases)
+
+        {false, true} ->
+          List.flatten(complex_cases)
+
+        {false, false} ->
+          raise "No types given"
+      end
 
     match_expr =
       quote do
@@ -165,7 +287,6 @@ defmodule SciEx.ComplexArrayHelpers do
       end
 
     case_statement = {:case, [], [match_expr, [do: cases]]}
-
 
     quote do
       def unquote(ex_f)(unquote_splicing(args), opts \\ []) do
@@ -180,8 +301,6 @@ defmodule SciEx.ComplexArrayHelpers do
       end
     end
   end
-
-
 
   @doc """
   Define a function that takes array of 64-bit complexs as the

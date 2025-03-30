@@ -56,6 +56,7 @@ defmodule SciEx.FFT do
   def dct1(array, opts \\ []) do
     axis = Keyword.get(opts, :axis, default_axis_for(array))
     validate_axis!(array, axis)
+
     adapt_2_arg_function_to_array_dimensions(
       fn i -> :"float64_dct1_array#{i}" end,
       array,
@@ -70,6 +71,7 @@ defmodule SciEx.FFT do
   def dct2(array, opts \\ []) do
     axis = Keyword.get(opts, :axis, default_axis_for(array))
     validate_axis!(array, axis)
+
     adapt_2_arg_function_to_array_dimensions(
       fn i -> :"float64_dct2_array#{i}" end,
       array,
@@ -84,6 +86,7 @@ defmodule SciEx.FFT do
   def dct3(array, opts \\ []) do
     axis = Keyword.get(opts, :axis, default_axis_for(array))
     validate_axis!(array, axis)
+
     adapt_2_arg_function_to_array_dimensions(
       fn i -> :"float64_dct3_array#{i}" end,
       array,
@@ -97,6 +100,7 @@ defmodule SciEx.FFT do
   def dct4(array, opts \\ []) do
     axis = Keyword.get(opts, :axis, default_axis_for(array))
     validate_axis!(array, axis)
+
     adapt_2_arg_function_to_array_dimensions(
       fn i -> :"float64_dct4_array#{i}" end,
       array,
