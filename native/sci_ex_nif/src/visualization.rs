@@ -84,7 +84,7 @@ fn contour_to_ex_contour(contour: Contour) -> ExContour {
 }
 
 #[rustler::nif]
-pub fn visualization_float64_contour_builder(
+pub fn visualization_float64_build_contours(
             ex_array2: ExFloat64Array2,
             thresholds: Vec<f64>,
             smoothing: bool
@@ -106,7 +106,7 @@ pub fn visualization_float64_contour_builder(
 }
 
 #[rustler::nif]
-pub fn visualization_float32_contour_builder(
+pub fn visualization_float32_build_contours(
             ex_array2: ExFloat32Array2,
             thresholds: Vec<f64>,
             smoothing: bool
