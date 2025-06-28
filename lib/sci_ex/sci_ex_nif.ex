@@ -13,6 +13,12 @@ defmodule SciEx.SciExNif do
 
   def eval(_expr), do: err()
 
+  def visualization_float64_contour_builder(_array, _thresholds, _smoothed), do: err()
+  def visualization_float32_contour_builder(_array, _thresholds, _smoothed), do: err()
+
+  def visualization_float64_array2_from_gray_image(_string), do: err()
+  def visualization_float32_array2_from_gray_image(_string), do: err()
+
   def complex64_new(_re, _im), do: err()
   def complex64_inspect(_z), do: err()
 

@@ -17,4 +17,6 @@ mod array_binary_operations;
 
 mod expression;
 
+mod visualization;
+
 rustler::init!("Elixir.SciEx.SciExNif");

@@ -1,5 +1,5 @@
 defmodule SciExTest.Float64.BinaryOperationsTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   use ExUnitProperties
 
   doctest SciEx

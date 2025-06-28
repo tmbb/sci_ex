@@ -1,5 +1,5 @@
 defmodule SciExTest.Complex<%= @bits %>.MathFunctionsTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   use ExUnitProperties
 
   doctest SciEx

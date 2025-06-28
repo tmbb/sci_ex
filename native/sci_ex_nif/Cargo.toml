@@ -16,3 +16,6 @@ ndrustfft = "0.5.0"
 rand_chacha = "0.3.1"
 rand = { version = "0.8", features = ["alloc"] }
 statrs = { version = "0.18.0", features = ["rand"] }
+contour = "0.13.1"
+geo-types = "0.7.16"
+ndarray_images = "0.1.0"

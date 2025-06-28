@@ -1,5 +1,5 @@
 defmodule SciExTest.Float64.MathFunctionsTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   use ExUnitProperties
 
   doctest SciEx
