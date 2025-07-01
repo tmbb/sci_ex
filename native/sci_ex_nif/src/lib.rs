@@ -19,4 +19,6 @@ mod expression;
 
 mod visualization;
 
+mod kde;
+
 rustler::init!("Elixir.SciEx.SciExNif");

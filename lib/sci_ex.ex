@@ -48,7 +48,18 @@ defmodule SciEx do
   import SciEx.ComplexArrayHelpers
   import SciEx.BinaryOperations
 
+  alias SciEx.FloatArrayHelpers
   alias SciEx.Types
+
+  @doc """
+  Elementwise maximum of array.
+  """
+  def max(array), do: FloatArrayHelpers.max(array)
+
+  @doc """
+  Elementwise minimum of array.
+  """
+  def min(array), do: FloatArrayHelpers.min(array)
 
   @doc """
   Add two values (arrays or scalars).

@@ -5,6 +5,9 @@ defmodule SciEx.SciExNif do
     otp_app: :sci_ex,
     crate: :sci_ex_nif
 
+  # Implement this as a macro so that we get the correct
+  # line numbers in stack traces (that doesn't happen if
+  # we implement it as a function)
   defmacrop err() do
     quote do
       :erlang.nif_error(:nif_not_loaded)
@@ -12,6 +15,9 @@ defmodule SciEx.SciExNif do
   end
 
   def eval(_expr), do: err()
+
+  def kde_float64_eval(_array, _grid_size, _estimator, _limits), do: err()
+  def kde_float32_eval(_array, _grid_size, _estimator, _limits), do: err()
 
   def visualization_float64_build_contours(_array, _thresholds, _smoothed), do: err()
   def visualization_float32_build_contours(_array, _thresholds, _smoothed), do: err()
@@ -82,6 +88,36 @@ defmodule SciEx.SciExNif do
   def float64_dct4_array6(_data, _axis), do: err()
 
   # Stats
+  # » Maximum and minimum (quantile functions)
+  def stats_float32_array1_elementwise_max(_array), do: err()
+  def stats_float32_array2_elementwise_max(_array), do: err()
+  def stats_float32_array3_elementwise_max(_array), do: err()
+  def stats_float32_array4_elementwise_max(_array), do: err()
+  def stats_float32_array5_elementwise_max(_array), do: err()
+  def stats_float32_array6_elementwise_max(_array), do: err()
+
+  def stats_float64_array1_elementwise_max(_array), do: err()
+  def stats_float64_array2_elementwise_max(_array), do: err()
+  def stats_float64_array3_elementwise_max(_array), do: err()
+  def stats_float64_array4_elementwise_max(_array), do: err()
+  def stats_float64_array5_elementwise_max(_array), do: err()
+  def stats_float64_array6_elementwise_max(_array), do: err()
+
+  def stats_float32_array1_elementwise_min(_array), do: err()
+  def stats_float32_array2_elementwise_min(_array), do: err()
+  def stats_float32_array3_elementwise_min(_array), do: err()
+  def stats_float32_array4_elementwise_min(_array), do: err()
+  def stats_float32_array5_elementwise_min(_array), do: err()
+  def stats_float32_array6_elementwise_min(_array), do: err()
+
+  def stats_float64_array1_elementwise_min(_array), do: err()
+  def stats_float64_array2_elementwise_min(_array), do: err()
+  def stats_float64_array3_elementwise_min(_array), do: err()
+  def stats_float64_array4_elementwise_min(_array), do: err()
+  def stats_float64_array5_elementwise_min(_array), do: err()
+  def stats_float64_array6_elementwise_min(_array), do: err()
+
+
   def stats_array1_beta_pdf(_s, _shape_a, _shape_b), do: err()
   def stats_array1_beta_cdf(_s, _shape_a, _shape_b), do: err()
   def stats_array1_beta_inverse_cdf(_s, _shape_a, _shape_b), do: err()
@@ -1709,6 +1745,9 @@ defmodule SciEx.SciExNif do
   def stats_draw_from_triangular(_seed, _min, _max, _mode, _nr_of_draws), do: err()
   def stats_draw_from_uniform(_seed, _min, _max, _nr_of_draws), do: err()
   def stats_draw_from_weibull(_seed, _shape, _scale, _nr_of_draws), do: err()
+
+  def float64_array1_from_list(_list), do: err()
+  def float32_array1_from_list(_list), do: err()
 
   def float64_array1_inspect(_array1), do: err()
   def float64_array2_inspect(_array2), do: err()

@@ -1,3 +1,5 @@
+use std::option::Option;
+
 use rustler::{Resource, ResourceArc, NifStruct, NifTaggedEnum};
 use ndarray::{Array1, Array2, Array3, Array4, Array5, Array6, ArrayBase, RawData, Dimension};
 use ndrustfft::Complex;
@@ -7,6 +9,21 @@ pub enum ParallelizationStrategy {
     NeverParallel,
     AlwaysParallel,
     SizeCutoff(usize)
+}
+
+#[derive(NifTaggedEnum)]
+pub enum ExOption<T> {
+    Some(T),
+    None
+}
+
+impl<T> ExOption<T> {
+    pub fn to_option(self) -> Option<T> {
+        match self  {
+            ExOption::Some(t) => Option::Some(t),
+            ExOption::None => Option::None
+        }
+    }
 }
 
 impl ParallelizationStrategy {
@@ -76,6 +93,16 @@ elixirize!(Array3, 3, Complex<f32>, "SciEx.Complex32.Array3", ExComplex32Array3R
 elixirize!(Array4, 4, Complex<f32>, "SciEx.Complex32.Array4", ExComplex32Array4Ref, ExComplex32Array4);
 elixirize!(Array5, 5, Complex<f32>, "SciEx.Complex32.Array5", ExComplex32Array5Ref, ExComplex32Array5);
 elixirize!(Array6, 6, Complex<f32>, "SciEx.Complex32.Array6", ExComplex32Array6Ref, ExComplex32Array6);
+
+#[rustler::nif]
+pub fn float64_array1_from_list(vec: Vec<f64>) -> ExFloat64Array1 {
+    ExFloat64Array1::new(Array1::from_vec(vec))
+}
+
+#[rustler::nif]
+pub fn float32_array1_from_list(vec: Vec<f32>) -> ExFloat32Array1 {
+    ExFloat32Array1::new(Array1::from_vec(vec))
+}
 
 #[rustler::nif]
 pub fn float64_array1_inspect(ex_array1: ExFloat64Array1) -> String {

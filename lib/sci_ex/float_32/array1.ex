@@ -8,6 +8,13 @@ defmodule SciEx.Float32.Array1 do
   alias SciEx.SciExNif
 
   @doc """
+  Create a 1D array from an Elixir list of floating point numbers.
+  """
+  def from_list(list) do
+    SciExNif.float32_array1_from_list(list)
+  end
+
+  @doc """
   Returns an array of values that partition the `[start, stop]`
   interval into `n` equal parts.
   """

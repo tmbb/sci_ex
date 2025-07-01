@@ -11,6 +11,8 @@ crate-type = ["cdylib"]
 [dependencies]
 libm = "0.2.11"
 rustler = "0.36.1"
+continuous_density_estimation = "0.1.0"
+kernel-density-estimation = "0.2.0"
 ndarray = { version = "0.16.1", features = ["rayon"] }
 ndrustfft = "0.5.0"
 rand_chacha = "0.3.1"
@@ -19,3 +21,4 @@ statrs = { version = "0.18.0", features = ["rand"] }
 contour = "0.13.1"
 geo-types = "0.7.16"
 ndarray_images = "0.1.0"
+ndarray-stats = "0.6.0"

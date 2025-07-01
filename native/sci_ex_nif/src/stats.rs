@@ -1,6 +1,7 @@
 use crate::datatypes::*;
 
 use ndarray::Array1;
+use ndarray_stats::QuantileExt;
 
 use core::iter;
 
@@ -20,6 +21,126 @@ use statrs::distribution::{
     LogNormal,Normal, Pareto,
     StudentsT, Triangular, Uniform, Weibull
 };
+
+#[rustler::nif]
+pub fn stats_float64_array1_elementwise_max(array: ExFloat64Array1) -> f64 {
+    *array.resource.0.max().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float64_array2_elementwise_max(array: ExFloat64Array2) -> f64 {
+    *array.resource.0.max().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float64_array3_elementwise_max(array: ExFloat64Array3) -> f64 {
+    *array.resource.0.max().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float64_array4_elementwise_max(array: ExFloat64Array4) -> f64 {
+    *array.resource.0.max().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float64_array5_elementwise_max(array: ExFloat64Array5) -> f64 {
+    *array.resource.0.max().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float64_array6_elementwise_max(array: ExFloat64Array6) -> f64 {
+    *array.resource.0.max().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float32_array1_elementwise_max(array: ExFloat32Array1) -> f32 {
+    *array.resource.0.max().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float32_array2_elementwise_max(array: ExFloat32Array2) -> f32 {
+    *array.resource.0.max().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float32_array3_elementwise_max(array: ExFloat32Array3) -> f32 {
+    *array.resource.0.max().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float32_array4_elementwise_max(array: ExFloat32Array4) -> f32 {
+    *array.resource.0.max().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float32_array5_elementwise_max(array: ExFloat32Array5) -> f32 {
+    *array.resource.0.max().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float32_array6_elementwise_max(array: ExFloat32Array6) -> f32 {
+    *array.resource.0.max().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float64_array1_elementwise_min(array: ExFloat64Array1) -> f64 {
+    *array.resource.0.min().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float64_array2_elementwise_min(array: ExFloat64Array2) -> f64 {
+    *array.resource.0.min().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float64_array3_elementwise_min(array: ExFloat64Array3) -> f64 {
+    *array.resource.0.min().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float64_array4_elementwise_min(array: ExFloat64Array4) -> f64 {
+    *array.resource.0.min().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float64_array5_elementwise_min(array: ExFloat64Array5) -> f64 {
+    *array.resource.0.min().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float64_array6_elementwise_min(array: ExFloat64Array6) -> f64 {
+    *array.resource.0.min().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float32_array1_elementwise_min(array: ExFloat32Array1) -> f32 {
+    *array.resource.0.min().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float32_array2_elementwise_min(array: ExFloat32Array2) -> f32 {
+    *array.resource.0.min().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float32_array3_elementwise_min(array: ExFloat32Array3) -> f32 {
+    *array.resource.0.min().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float32_array4_elementwise_min(array: ExFloat32Array4) -> f32 {
+    *array.resource.0.min().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float32_array5_elementwise_min(array: ExFloat32Array5) -> f32 {
+    *array.resource.0.min().unwrap()
+}
+
+#[rustler::nif]
+pub fn stats_float32_array6_elementwise_min(array: ExFloat32Array6) -> f32 {
+    *array.resource.0.min().unwrap()
+}
 
 macro_rules! draw_from_univariate_dist {
     ($seed:expr; $dist:expr; $nr_of_draws:expr) => {

@@ -1,6 +1,88 @@
 defmodule SciEx.FloatArrayHelpers do
   @moduledoc false
 
+  alias SciEx.{Float64, Float32, SciExNif}
+
+  def max(array) do
+    case array do
+      %Float64.Array1{} ->
+        SciExNif.stats_float64_array1_elementwise_max(array)
+
+      %Float64.Array2{} ->
+        SciExNif.stats_float64_array2_elementwise_max(array)
+
+      %Float64.Array3{} ->
+        SciExNif.stats_float64_array3_elementwise_max(array)
+
+      %Float64.Array4{} ->
+        SciExNif.stats_float64_array4_elementwise_max(array)
+
+      %Float64.Array5{} ->
+        SciExNif.stats_float64_array5_elementwise_max(array)
+
+      %Float64.Array6{} ->
+        SciExNif.stats_float64_array6_elementwise_max(array)
+
+      %Float32.Array1{} ->
+        SciExNif.stats_float32_array1_elementwise_max(array)
+
+      %Float32.Array2{} ->
+        SciExNif.stats_float32_array2_elementwise_max(array)
+
+      %Float32.Array3{} ->
+        SciExNif.stats_float32_array3_elementwise_max(array)
+
+      %Float32.Array4{} ->
+        SciExNif.stats_float32_array4_elementwise_max(array)
+
+      %Float32.Array5{} ->
+        SciExNif.stats_float32_array5_elementwise_max(array)
+
+      %Float32.Array6{} ->
+        SciExNif.stats_float32_array6_elementwise_max(array)
+    end
+  end
+
+  def min(array) do
+    case array do
+      %Float64.Array1{} ->
+        SciExNif.stats_float64_array1_elementwise_min(array)
+
+      %Float64.Array2{} ->
+        SciExNif.stats_float64_array2_elementwise_min(array)
+
+      %Float64.Array3{} ->
+        SciExNif.stats_float64_array3_elementwise_min(array)
+
+      %Float64.Array4{} ->
+        SciExNif.stats_float64_array4_elementwise_min(array)
+
+      %Float64.Array5{} ->
+        SciExNif.stats_float64_array5_elementwise_min(array)
+
+      %Float64.Array6{} ->
+        SciExNif.stats_float64_array6_elementwise_min(array)
+
+      %Float32.Array1{} ->
+        SciExNif.stats_float32_array1_elementwise_min(array)
+
+      %Float32.Array2{} ->
+        SciExNif.stats_float32_array2_elementwise_min(array)
+
+      %Float32.Array3{} ->
+        SciExNif.stats_float32_array3_elementwise_min(array)
+
+      %Float32.Array4{} ->
+        SciExNif.stats_float32_array4_elementwise_min(array)
+
+      %Float32.Array5{} ->
+        SciExNif.stats_float32_array5_elementwise_min(array)
+
+      %Float32.Array6{} ->
+        SciExNif.stats_float32_array6_elementwise_min(array)
+    end
+  end
+
   def to_float(x) when is_float(x), do: x
   def to_float(x) when is_integer(x), do: 1.0 * x
 
