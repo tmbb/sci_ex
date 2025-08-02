@@ -9,7 +9,18 @@ defmodule SciEx.MixProject do
       version: @version,
       elixir: "~> 1.16",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package()
+    ]
+  end
+
+  defp package() do
+    [
+      # These are the default files included in the package
+      files: ~w(lib priv .formatter.exs mix.exs README* readme* LICENSE*
+                license* CHANGELOG* changelog* src native),
+      licenses: ["Apache-2.0"],
+      links: %{"GitHub" => "https://github.com/tmbb/sci_ex"}
     ]
   end
 
