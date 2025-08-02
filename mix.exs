@@ -17,7 +17,7 @@ defmodule SciEx.MixProject do
   defp package() do
     [
       files: ~w(lib .formatter.exs mix.exs README*
-                LICENSE* CHANGELOG* src native),
+                LICENSE* CHANGELOG* native),
       licenses: ["Apache-2.0"],
       links: %{"GitHub" => "https://github.com/tmbb/sci_ex"},
       description: "Plotting library for Elixir"
