@@ -16,11 +16,11 @@ defmodule SciEx.MixProject do
 
   defp package() do
     [
-      # These are the default files included in the package
       files: ~w(lib .formatter.exs mix.exs README*
                 LICENSE* CHANGELOG* src native),
       licenses: ["Apache-2.0"],
-      links: %{"GitHub" => "https://github.com/tmbb/sci_ex"}
+      links: %{"GitHub" => "https://github.com/tmbb/sci_ex"},
+      description: "Plotting library for Elixir"
     ]
   end
 
