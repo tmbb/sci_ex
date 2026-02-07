@@ -5,14 +5,17 @@ defmodule SciEx.Symbolic do
 
   def grad_wrt(num, _x) when is_number(num), do: 0
 
-  def grad_wrt({name, _meta, atom} = expr, x) when is_atom(name) and is_atom(atom) and expr != x, do: 0
+  def grad_wrt({name, _meta, atom} = expr, x) when is_atom(name) and is_atom(atom) and expr != x,
+    do: 0
 
   def grad_wrt({:+, meta, [a, b]}, x), do: {:+, meta, [grad_wrt(a, x), grad_wrt(b, x)]}
 
   def grad_wrt({:*, meta, [a, b]}, x) do
-    {:+, meta, [
-      {:*, meta, [b, grad_wrt(a, x)]},
-      {:*, meta, [a, grad_wrt(b, x)]}]}
+    {:+, meta,
+     [
+       {:*, meta, [b, grad_wrt(a, x)]},
+       {:*, meta, [a, grad_wrt(b, x)]}
+     ]}
   end
 
   def simplify0({:+, _meta, [a, 0]}), do: simplify(a)
@@ -36,6 +39,7 @@ defmodule SciEx.Symbolic do
 
   def simplify(expr) do
     expr2 = simplify0(expr)
+
     if expr2 == expr do
       expr
     else

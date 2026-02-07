@@ -18,6 +18,13 @@ use crate::datatypes::*;
 pub fn float<%= bits %>_array1_zeros(n1: usize) -> ExFloat<%= bits %>Array1 {
     ExFloat<%= bits %>Array1::new(Array1::zeros(n1))
 }
+
+#[rustler::nif]
+pub fn float<%= bits %>_array1_from_list(vec: Vec<f<%= bits %>>) -> ExFloat<%= bits %>Array1 {
+    let array1: Array1<f<%= bits %>> = Array1::from_vec(vec);
+    ExFloat<%= bits %>Array1::new(array1)
+}
+
 <%= for n_dim <- 2..6 do %><% 
   typed_args = Enum.map(1..n_dim, fn i -> "n#{i}: usize" end) |> Enum.intersperse(", ")
   untyped_args = Enum.map(1..n_dim, fn i -> "n#{i}" end) |> Enum.intersperse(", ")
@@ -25,6 +32,13 @@ pub fn float<%= bits %>_array1_zeros(n1: usize) -> ExFloat<%= bits %>Array1 {
 #[rustler::nif]
 pub fn float<%= bits %>_array<%= n_dim %>_zeros(<%= typed_args %>) -> ExFloat<%= bits %>Array<%= n_dim %> {
     ExFloat<%= bits %>Array<%= n_dim %>::new(Array<%= n_dim %>::zeros((<%= untyped_args %>)))
+}
+
+#[rustler::nif]
+pub fn float<%= bits %>_array<%= n_dim %>_from_list(vec: Vec<f<%= bits %>>, <%= typed_args %>) -> ExFloat<%= bits %>Array<%= n_dim %> {
+    let array1: Array1<f<%= bits %>> = Array1::from_vec(vec);
+    let array<%= n_dim %>: Array<%= n_dim %><f<%= bits %>> = array1.into_shape_with_order((<%= untyped_args %>)).unwrap();
+    ExFloat<%= bits %>Array<%= n_dim %>::new(array<%= n_dim %>)
 }
 <% end %>
 

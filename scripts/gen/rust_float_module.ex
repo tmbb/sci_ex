@@ -100,8 +100,8 @@ defmodule SciEx.Gen.RustFloatModule do
   end
 
   def to_elixir_nif_file(rust_module, block_name, path) do
-    marker1 = "  # %% BEGIN-GENERATED:#{block_name} %%\n"
-    marker2 = "  # %% END-GENERATED:#{block_name} %%\n"
+    marker1 = "  # %% BEGIN:GENERATED:#{block_name} %%\n"
+    marker2 = "  # %% END:GENERATED:#{block_name} %%\n"
 
     code_to_inject =
       for f <- rust_module.functions do

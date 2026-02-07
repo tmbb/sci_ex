@@ -10,10 +10,35 @@ defmodule SciEx.ComplexArrayModuleBuilder do
     zeros_arg_types = List.duplicate(quote(do: pos_integer()), dim)
     ones_arg_types = zeros_arg_types
 
+    maybe_transpose =
+      if dim == 2 do
+        quote do
+          @doc """
+          Transpose the 2D array, interpreted as a matrix.
+          """
+          @spec transpose(t()) :: t()
+          def transpose(array2) do
+            SciEx.SciExNif.unquote(:"complex#{bits}_transpose")(array2)
+          end
+        end
+      else
+        nil
+      end
+
+
     quote do
       defstruct n_dims: nil, resource: nil
 
       @type t :: %__MODULE__{}
+
+      unquote(
+        bind_comparison_array_ops_to_sci_ex_nifs(
+          caller_module,
+          :"complex#{bits}_array#{dim}"
+        )
+      )
+
+      unquote(maybe_transpose)
 
       @doc """
       Creates an array of zeros (`0.0`) with the given dimensions.
@@ -41,6 +66,77 @@ defmodule SciEx.ComplexArrayModuleBuilder do
             ">"
           ])
         end
+      end
+    end
+  end
+
+  defp bind_comparison_array_ops_to_sci_ex_nifs(module, prefix) do
+    quote do
+      @doc """
+      Tests whether two arrays are equal.
+      The arrays are considered equal if every element from `a`
+      is equal to the element of `b` with the same index.
+      """
+      @spec equal?(t(), t()) :: boolean()
+      def equal?(%unquote(module){} = a, %unquote(module){} = b) do
+        SciEx.SciExNif.unquote(:"#{prefix}_equal")(a, b)
+      end
+
+      @doc """
+      Tests whether two arrays are different.
+      """
+      @spec not_equal?(t(), t()) :: boolean()
+      def not_equal?(%unquote(module){} = a, %unquote(module){} = b) do
+        SciEx.SciExNif.unquote(:"#{prefix}_not_equal")(a, b)
+      end
+
+      @doc """
+      Tests whether every element in `a` is different from the element
+      in `b` with the same index.
+
+      This function is different from `not_equal?/2` as `not_equal?/2`
+      considers the arrays to be different as long as a single element
+      difers.
+      """
+      @spec all_not_equal?(t(), t()) :: boolean()
+      def all_not_equal?(%unquote(module){} = a, %unquote(module){} = b) do
+        SciEx.SciExNif.unquote(:"#{prefix}_all_not_equal")(a, b)
+      end
+
+      @doc """
+      Tests whether the absolute value of every element in `a` is less
+      than the absolute value of every element in `b` with the same index.
+      """
+      @spec all_absolute_values_less_than?(t(), t()) :: boolean()
+      def all_absolute_values_less_than?(%unquote(module){} = a, %unquote(module){} = b) do
+        SciEx.SciExNif.unquote(:"#{prefix}_all_absolute_values_less_than")(a, b)
+      end
+
+      @doc """
+      Tests whether the absolute value of every element in `a` is less than
+      or equal to the absolute value of every element in `b` with the same index.
+      """
+      @spec all_absolute_values_less_than_or_equal?(t(), t()) :: boolean()
+      def all_absolute_values_less_than_or_equal?(%unquote(module){} = a, %unquote(module){} = b) do
+        SciEx.SciExNif.unquote(:"#{prefix}_all_absolute_values_less_than_or_equal")(a, b)
+      end
+
+      @doc """
+      Tests whether the absolute value of every element in `a` is less than
+      the absolute value of every element in `b` with the same index.
+      """
+      @spec all_absolute_values_greater_than?(t(), t()) :: boolean()
+      def all_absolute_values_greater_than?(%unquote(module){} = a, %unquote(module){} = b) do
+        SciEx.SciExNif.unquote(:"#{prefix}_all_absolute_values_greater_than")(a, b)
+      end
+
+      @doc """
+      Tests whether the absolute value of every element in `a` is greater than
+      or equal to the absolute value every element in `b` with the same index.
+      """
+      @spec all_absolute_values_greater_than_or_equal?(t(), t()) :: boolean()
+      def all_absolute_values_greater_than_or_equal?(%unquote(module){} = a, %unquote(module){} = b) do
+        SciEx.SciExNif.unquote(:"#{prefix}_all_absolute_values_greater_than_or_equal")(a, b)
       end
     end
   end

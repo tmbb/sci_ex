@@ -5,6 +5,15 @@ defmodule SciEx.Gen.Main do
 
   require EEx
 
+  @external_resource "scripts/rust_generator/templates/array_unary_operations.rs"
+
+  EEx.function_from_file(
+    :def,
+    :array_unary_operations_rs,
+    "scripts/rust_generator/templates/array_unary_operations.rs",
+    []
+  )
+
   @external_resource "scripts/rust_generator/templates/array_comparisons.rs"
 
   EEx.function_from_file(
@@ -41,6 +50,52 @@ defmodule SciEx.Gen.Main do
     [:assigns]
   )
 
+  @external_resource "scripts/rust_generator/templates/array_axis.rs"
+
+  EEx.function_from_file(
+    :def,
+    :array_axis_rs,
+    "scripts/rust_generator/templates/array_axis.rs",
+    [:assigns]
+  )
+
+  def generate_unary_functions() do
+    path = "native/sci_ex_nif/src/array_unary_operations.rs"
+    code = array_unary_operations_rs()
+
+    File.write!(path, code)
+
+    generated_defs =
+      for bits <- [64, 32] do
+        defs_for_bits =
+          for type <- ["float", "complex"] do
+            _defs_for_type =
+              for n_dims <- 1..6 do
+                "  def #{type}#{bits}_array#{n_dims}_sum(_array), do: err()\n"
+              end
+          end
+
+        Enum.intersperse(defs_for_bits, "\n")
+      end
+
+    extra_defs =
+      for type <- ["complex", "float"], bits <- [64, 32] do
+        "  def #{type}#{bits}_transpose(_matrix), do: err()\n"
+      end
+
+    all_defs = [extra_defs, generated_defs]
+
+    code_to_inject = List.flatten(all_defs)
+
+    Injector.inject_between(
+      "lib/sci_ex/sci_ex_nif.ex",
+      "  # %% BEGIN:GENERATED:array_unary_operations %%\n",
+      "  # %% END:GENERATED:array_unary_operations %%\n",
+      code_to_inject
+    )
+  end
+
+
   def generate_fft(bits) do
     path = "native/sci_ex_nif/src/fft_float#{bits}.rs"
     code = fft_rs(bits: bits)
@@ -59,7 +114,7 @@ defmodule SciEx.Gen.Main do
     type = "f#{bits}"
 
     # Create our rust/rustler module
-    math_complex_module = %RustFloatModule{
+    math_float_module = %RustFloatModule{
       prefix: "math",
       type: "float",
       bits: bits,
@@ -67,8 +122,8 @@ defmodule SciEx.Gen.Main do
     }
 
     # Add vectorized functions to the module
-    math_complex_module = RustFloatModule.add_vectorized_functions_from_file(
-      math_complex_module,
+    math_float_module = RustFloatModule.add_vectorized_functions_from_file(
+      math_float_module,
       input_path,
       # TODO: check this for conflicts
       rename_self_to: "x",
@@ -77,16 +132,16 @@ defmodule SciEx.Gen.Main do
       filter: fn f -> f.result_type == type end
     )
 
-    math_complex_module = RustFloatModule.add_vectorized_functions_from_file(
-      math_complex_module,
+    math_float_module = RustFloatModule.add_vectorized_functions_from_file(
+      math_float_module,
       "scripts/rust_generator/rust_modules/f#{bits}_libm_api.rs",
       rs_module: "Libm::<f#{bits}>"
     )
 
-    RustFloatModule.to_rust_file(math_complex_module, output_path)
+    RustFloatModule.to_rust_file(math_float_module, output_path)
 
     RustFloatModule.to_ex_test_file(
-      math_complex_module,
+      math_float_module,
       test_path,
       overrides: %{
         "cbrt" => "cube_root"
@@ -102,7 +157,7 @@ defmodule SciEx.Gen.Main do
     )
 
     RustFloatModule.to_elixir_nif_file(
-      math_complex_module,
+      math_float_module,
       "math_float#{bits}",
       "lib/sci_ex/sci_ex_nif.ex"
     )
@@ -140,12 +195,24 @@ defmodule SciEx.Gen.Main do
 
     RustComplexModule.to_rust_file(math_complex_module, output_path)
 
-    RustFloatModule.to_ex_test_file(
+    RustComplexModule.to_ex_test_file(
       math_complex_module,
-      test_path
+      test_path,
+      overrides: %{
+        "cbrt" => "cube_root"
+      },
+      exclude: [
+        "finv",
+        "to_radians",
+        "to_degrees",
+        "signum",
+        "tgamma",
+        "recip",
+        "log1p"
+      ]
     )
 
-    RustFloatModule.to_elixir_nif_file(
+    RustComplexModule.to_elixir_nif_file(
       math_complex_module,
       "math_complex#{bits}",
       "lib/sci_ex/sci_ex_nif.ex"
@@ -166,7 +233,19 @@ defmodule SciEx.Gen.Main do
               for n_dims <- 1..6 do
                 args = Enum.map(1..n_dims, fn i -> "_n#{i}" end) |> Enum.intersperse(", ")
 
-                [
+                from_list =
+                  case {type, n_dims} do
+                    {"float", 1} ->
+                      ["  def #{type}#{bits}_array#{n_dims}_from_list(_vec), do: err()\n"]
+
+                    {"float", _other} ->
+                      ["  def #{type}#{bits}_array#{n_dims}_from_list(_vec, #{args}), do: err()\n"]
+
+                    {"complex", _any} ->
+                      []
+                  end
+
+                from_list ++ [
                   "  def #{type}#{bits}_array#{n_dims}_zeros(#{args}), do: err()\n",
                   "  def #{type}#{bits}_array#{n_dims}_ones(#{args}), do: err()\n"
                 ]
@@ -192,6 +271,35 @@ defmodule SciEx.Gen.Main do
       "lib/sci_ex/sci_ex_nif.ex",
       "  # %% BEGIN:GENERATED:array_builders %%\n",
       "  # %% END:GENERATED:array_builders %%\n",
+      code_to_inject
+    )
+  end
+
+  def generate_array_axis_operations() do
+    code = array_axis_rs(%{})
+    path = "native/sci_ex_nif/src/array_axis.rs"
+
+    File.write!(path, code)
+
+    generated_defs =
+      for bits <- [64, 32] do
+        defs_for_bits =
+          for type <- ["float", "complex"] do
+            _defs_for_type =
+              for n_dims <- 1..6 do
+                "  def #{type}#{bits}_array#{n_dims}_invert_axis(_array, _axis), do: err()\n"
+              end
+          end
+
+        Enum.intersperse(defs_for_bits, "\n")
+      end
+
+    code_to_inject = List.flatten(generated_defs)
+
+    Injector.inject_between(
+      "lib/sci_ex/sci_ex_nif.ex",
+      "  # %% BEGIN:GENERATED:array_axis %%\n",
+      "  # %% END:GENERATED:array_axis %%\n",
       code_to_inject
     )
   end
@@ -232,7 +340,14 @@ defmodule SciEx.Gen.Main do
         Enum.intersperse(defs_for_bits, "\n")
       end
 
-    code_to_inject = List.flatten(generated_defs)
+    matrix_defs =
+      for type <- ["complex", "float"], bits <- [64, 32] do
+        "  def #{type}#{bits}_matrix_matrix(_a, _b), do: err()\n"
+      end
+
+    all_defs = [matrix_defs, generated_defs]
+
+    code_to_inject = List.flatten(all_defs)
 
     Injector.inject_between(
       "lib/sci_ex/sci_ex_nif.ex",
@@ -265,17 +380,15 @@ defmodule SciEx.Gen.Main do
 
     precise_float_functions =
       for nr_of_bits <- [64, 32], n_dim <- 1..6, name <- precise_float_function_names do
-        "  def float#{nr_of_bits}_array#{n_dim}_#{name}(_a, _b), do: err()"
+        "  def float#{nr_of_bits}_array#{n_dim}_#{name}(_a, _b), do: err()\n"
       end
 
     precise_complex_functions =
       for nr_of_bits <- [64, 32], n_dim <- 1..6, name <- precise_complex_function_names do
-        "  def complex#{nr_of_bits}_array#{n_dim}_#{name}(_a, _b), do: err()"
+        "  def complex#{nr_of_bits}_array#{n_dim}_#{name}(_a, _b), do: err()\n"
       end
 
-    all_functions = precise_float_functions ++ precise_complex_functions
-
-    code_to_inject = Enum.intersperse(all_functions, "\n")
+    code_to_inject = precise_float_functions ++ precise_complex_functions
 
     code = array_comparisons_rs()
     File.write!(
@@ -285,13 +398,16 @@ defmodule SciEx.Gen.Main do
 
     Injector.inject_between(
       "lib/sci_ex/sci_ex_nif.ex",
-      "  # %% BEGIN:GENERATED:float_array_comparisons %%\n",
-      "  # %% END:GENERATED:float_array_comparisons %%\n",
+      "  # %% BEGIN:GENERATED:array_comparisons %%\n",
+      "  # %% END:GENERATED:array_comparisons %%\n",
       code_to_inject
     )
   end
 
   def run() do
+    # Simple unary functions
+    generate_unary_functions()
+
     # Simple array builders for 1D up to 6D arrays.
     # More sophisticated builders for 1D arrays.
     generate_array_builders()
@@ -312,6 +428,8 @@ defmodule SciEx.Gen.Main do
     # Generate FFT functions (currently only DCT)
     generate_fft(64)
     generate_fft(32)
+
+    generate_array_axis_operations()
 
     :ok
   end

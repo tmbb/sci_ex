@@ -1,16 +1,16 @@
 # SciEx
 
-**TODO: Add description**
+Scientific computing for Elixir.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `sci_ex` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `sci_ex` to your list
+of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:sci_ex, "~> 0.1.0"}
+    {:sci_ex, "~> x.y.z"}
   ]
 end
 ```

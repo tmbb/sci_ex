@@ -7,6 +7,35 @@
 use crate::datatypes::*;
 
 // =========================================
+// Matrix operations
+// =========================================
+
+#[rustler::nif]
+pub fn float64_matrix_matrix(a: ExFloat64Array2, b: ExFloat64Array2) -> ExFloat64Array2 {
+  let product = a.resource.0.dot(&b.resource.0);
+  ExFloat64Array2::new(product)
+}
+
+#[rustler::nif]
+pub fn float32_matrix_matrix(a: ExFloat32Array2, b: ExFloat32Array2) -> ExFloat32Array2 {
+  let product = a.resource.0.dot(&b.resource.0);
+  ExFloat32Array2::new(product)
+}
+
+#[rustler::nif]
+pub fn complex64_matrix_matrix(a: ExComplex64Array2, b: ExComplex64Array2) -> ExComplex64Array2 {
+  let product = a.resource.0.dot(&b.resource.0);
+  ExComplex64Array2::new(product)
+}
+
+#[rustler::nif]
+pub fn complex32_matrix_matrix(a: ExComplex32Array2, b: ExComplex32Array2) -> ExComplex32Array2 {
+  let product = a.resource.0.dot(&b.resource.0);
+  ExComplex32Array2::new(product)
+}
+
+
+// =========================================
 // Real numbers
 // =========================================
 

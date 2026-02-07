@@ -8,10 +8,10 @@ defmodule SciEx.Float64.Array1 do
   alias SciEx.SciExNif
 
   @doc """
-  Create a 1D array from an Elixir list of floating point numbers.
+  Create an Elixir list from an 1D array.
   """
-  def from_list(list) do
-    SciExNif.float64_array1_from_list(list)
+  def to_list(list) do
+    SciExNif.float64_array1_to_list(list)
   end
 
   @doc """

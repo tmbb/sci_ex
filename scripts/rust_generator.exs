@@ -9,6 +9,6 @@
 #
 # It's ok if we depend on external packages here, though.
 paths = Path.wildcard("scripts/gen/*.ex")
-Kernel.ParallelCompiler.compile(paths)
+Kernel.ParallelCompiler.compile(paths, return_diagnostics: true)
 
 SciEx.Gen.Main.run()

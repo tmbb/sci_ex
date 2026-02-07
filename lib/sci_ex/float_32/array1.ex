@@ -8,10 +8,10 @@ defmodule SciEx.Float32.Array1 do
   alias SciEx.SciExNif
 
   @doc """
-  Create a 1D array from an Elixir list of floating point numbers.
+  Create an Elixir list from an 1D array.
   """
-  def from_list(list) do
-    SciExNif.float32_array1_from_list(list)
+  def to_list(list) do
+    SciExNif.float32_array1_to_list(list)
   end
 
   @doc """
@@ -40,7 +40,7 @@ defmodule SciEx.Float32.Array1 do
 
   @doc """
   Returns an array of values of `n` numbers spaced evenly
-  on a log scale Return numbers spaced evenly on a log scale.
+  on a log scale.
 
   TODO: explain this one better
   """

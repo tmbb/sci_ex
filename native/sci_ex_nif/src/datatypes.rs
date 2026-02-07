@@ -1,8 +1,11 @@
 use std::option::Option;
 
 use rustler::{Resource, ResourceArc, NifStruct, NifTaggedEnum};
-use ndarray::{Array1, Array2, Array3, Array4, Array5, Array6, ArrayBase, RawData, Dimension};
+use ndarray::{Array1, Array2, Array3, Array4, Array5, Array6,
+              ArrayBase, RawData, Dimension};
 use ndrustfft::Complex;
+
+use kodama;
 
 #[derive(NifTaggedEnum)]
 pub enum ParallelizationStrategy {
@@ -15,6 +18,31 @@ pub enum ParallelizationStrategy {
 pub enum ExOption<T> {
     Some(T),
     None
+}
+
+#[derive(NifTaggedEnum)]
+pub enum ClusteringMethod {
+    Single,
+    Complete,
+    Average,
+    Weighted,
+    Ward,
+    Centroid,
+    Median
+}
+
+impl ClusteringMethod {
+    pub fn to_kodama(&self) -> kodama::Method {
+        match &self {
+            ClusteringMethod::Single => kodama::Method::Single,
+            ClusteringMethod::Complete => kodama::Method::Complete,
+            ClusteringMethod::Average => kodama::Method::Average,
+            ClusteringMethod::Weighted => kodama::Method::Weighted,
+            ClusteringMethod::Ward => kodama::Method::Ward,
+            ClusteringMethod::Centroid => kodama::Method::Centroid,
+            ClusteringMethod::Median => kodama::Method::Median
+        }
+    }
 }
 
 impl<T> ExOption<T> {
@@ -95,13 +123,15 @@ elixirize!(Array5, 5, Complex<f32>, "SciEx.Complex32.Array5", ExComplex32Array5R
 elixirize!(Array6, 6, Complex<f32>, "SciEx.Complex32.Array6", ExComplex32Array6Ref, ExComplex32Array6);
 
 #[rustler::nif]
-pub fn float64_array1_from_list(vec: Vec<f64>) -> ExFloat64Array1 {
-    ExFloat64Array1::new(Array1::from_vec(vec))
+pub fn float64_array1_to_list(ex_array1: ExFloat64Array1) -> Vec<f64> {
+    let vec: Vec<f64> = ex_array1.resource.0.iter().map(|v| *v).collect();
+    vec
 }
 
 #[rustler::nif]
-pub fn float32_array1_from_list(vec: Vec<f32>) -> ExFloat32Array1 {
-    ExFloat32Array1::new(Array1::from_vec(vec))
+pub fn float32_array1_to_list(ex_array1: ExFloat32Array1) -> Vec<f32> {
+    let vec: Vec<f32> = ex_array1.resource.0.iter().map(|v| *v).collect();
+    vec
 }
 
 #[rustler::nif]
@@ -310,3 +340,6 @@ pub fn complex32_array6_inspect(ex_array6: ExComplex32Array6) -> String {
     let array6: &Array6<Complex<f32>> = &ex_array6.resource.0;
     format!("{:?}", &array6)
 }
+
+// Clustering related types
+

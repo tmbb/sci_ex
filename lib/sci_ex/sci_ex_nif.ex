@@ -14,6 +14,9 @@ defmodule SciEx.SciExNif do
     end
   end
 
+  def dendrogram32(_matrix, _method), do: err()
+  def dendrogram64(_matrix, _method), do: err()
+
   def eval(_expr), do: err()
 
   def kde_float64_eval(_array, _grid_size, _estimator, _limits), do: err()
@@ -117,7 +120,6 @@ defmodule SciEx.SciExNif do
   def stats_float64_array5_elementwise_min(_array), do: err()
   def stats_float64_array6_elementwise_min(_array), do: err()
 
-
   def stats_array1_beta_pdf(_s, _shape_a, _shape_b), do: err()
   def stats_array1_beta_cdf(_s, _shape_a, _shape_b), do: err()
   def stats_array1_beta_inverse_cdf(_s, _shape_a, _shape_b), do: err()
@@ -166,7 +168,7 @@ defmodule SciEx.SciExNif do
   def stats_array1_laplace_cdf(_s, _location, _scale), do: err()
   def stats_array1_laplace_inverse_cdf(_s, _location, _scale), do: err()
 
-  # %% BEGIN-GENERATED:math_complex64 %%
+  # %% BEGIN:GENERATED:math_complex64 %%
   def math_complex64_from_polar_array1_array1(_r, _theta, _parallel), do: err()
   def math_complex64_from_polar_array1_scalar(_r, _theta, _parallel), do: err()
   def math_complex64_from_polar_scalar_array1(_r, _theta, _parallel), do: err()
@@ -381,9 +383,9 @@ defmodule SciEx.SciExNif do
   def math_complex64_finv_array4(_z, _parallel), do: err()
   def math_complex64_finv_array5(_z, _parallel), do: err()
   def math_complex64_finv_array6(_z, _parallel), do: err()
-  # %% END-GENERATED:math_complex64 %%
+  # %% END:GENERATED:math_complex64 %%
 
-  # %% BEGIN-GENERATED:math_complex32 %%
+  # %% BEGIN:GENERATED:math_complex32 %%
   def math_complex32_from_polar_array1_array1(_r, _theta, _parallel), do: err()
   def math_complex32_from_polar_array1_scalar(_r, _theta, _parallel), do: err()
   def math_complex32_from_polar_scalar_array1(_r, _theta, _parallel), do: err()
@@ -598,9 +600,9 @@ defmodule SciEx.SciExNif do
   def math_complex32_finv_array4(_z, _parallel), do: err()
   def math_complex32_finv_array5(_z, _parallel), do: err()
   def math_complex32_finv_array6(_z, _parallel), do: err()
-  # %% END-GENERATED:math_complex32 %%
+  # %% END:GENERATED:math_complex32 %%
 
-  # %% BEGIN-GENERATED:math_float64 %%
+  # %% BEGIN:GENERATED:math_float64 %%
   def math_float64_floor_array1(_x, _parallel), do: err()
   def math_float64_floor_scalar(_x), do: err()
   def math_float64_floor_array2(_x, _parallel), do: err()
@@ -1160,9 +1162,9 @@ defmodule SciEx.SciExNif do
   def math_float64_y1_array4(_x, _parallel), do: err()
   def math_float64_y1_array5(_x, _parallel), do: err()
   def math_float64_y1_array6(_x, _parallel), do: err()
-  # %% END-GENERATED:math_float64 %%
+  # %% END:GENERATED:math_float64 %%
 
-  # %% BEGIN-GENERATED:math_float32 %%
+  # %% BEGIN:GENERATED:math_float32 %%
   def math_float32_floor_array1(_x, _parallel), do: err()
   def math_float32_floor_scalar(_x), do: err()
   def math_float32_floor_array2(_x, _parallel), do: err()
@@ -1722,7 +1724,7 @@ defmodule SciEx.SciExNif do
   def math_float32_y1_array4(_x, _parallel), do: err()
   def math_float32_y1_array5(_x, _parallel), do: err()
   def math_float32_y1_array6(_x, _parallel), do: err()
-  # %% END-GENERATED:math_float32 %%
+  # %% END:GENERATED:math_float32 %%
 
   # Sample random variables
   def stats_draw_from_beta(_seed, _a, _b, _nr_of_draws), do: err()
@@ -1746,8 +1748,8 @@ defmodule SciEx.SciExNif do
   def stats_draw_from_uniform(_seed, _min, _max, _nr_of_draws), do: err()
   def stats_draw_from_weibull(_seed, _shape, _scale, _nr_of_draws), do: err()
 
-  def float64_array1_from_list(_list), do: err()
-  def float32_array1_from_list(_list), do: err()
+  def float64_array1_to_list(_array1), do: err()
+  def float32_array1_to_list(_array1), do: err()
 
   def float64_array1_inspect(_array1), do: err()
   def float64_array2_inspect(_array2), do: err()
@@ -1778,7 +1780,7 @@ defmodule SciEx.SciExNif do
   def complex32_array6_inspect(_array5), do: err()
 
   # Don't edit the lines below, they are automatically generated
-  # %% BEGIN:GENERATED:float_array_comparisons %%
+  # %% BEGIN:GENERATED:array_comparisons %%
   def float64_array1_equal(_a, _b), do: err()
   def float64_array1_not_equal(_a, _b), do: err()
   def float64_array1_all_not_equal(_a, _b), do: err()
@@ -1994,9 +1996,73 @@ defmodule SciEx.SciExNif do
   def complex32_array6_all_absolute_values_greater_than(_a, _b), do: err()
   def complex32_array6_all_absolute_values_greater_than_or_equal(_a, _b), do: err()
   def complex32_array6_all_absolute_values_less_than(_a, _b), do: err()
-  # %% END:GENERATED:float_array_comparisons %%
   def complex32_array6_all_absolute_values_less_than_or_equal(_a, _b), do: err()
+  # %% END:GENERATED:array_comparisons %%
 
+  # %% BEGIN:GENERATED:array_unary_operations %%
+  def complex64_transpose(_matrix), do: err()
+  def complex32_transpose(_matrix), do: err()
+  def float64_transpose(_matrix), do: err()
+  def float32_transpose(_matrix), do: err()
+  def float64_array1_sum(_array), do: err()
+  def float64_array2_sum(_array), do: err()
+  def float64_array3_sum(_array), do: err()
+  def float64_array4_sum(_array), do: err()
+  def float64_array5_sum(_array), do: err()
+  def float64_array6_sum(_array), do: err()
+
+  def complex64_array1_sum(_array), do: err()
+  def complex64_array2_sum(_array), do: err()
+  def complex64_array3_sum(_array), do: err()
+  def complex64_array4_sum(_array), do: err()
+  def complex64_array5_sum(_array), do: err()
+  def complex64_array6_sum(_array), do: err()
+  def float32_array1_sum(_array), do: err()
+  def float32_array2_sum(_array), do: err()
+  def float32_array3_sum(_array), do: err()
+  def float32_array4_sum(_array), do: err()
+  def float32_array5_sum(_array), do: err()
+  def float32_array6_sum(_array), do: err()
+
+  def complex32_array1_sum(_array), do: err()
+  def complex32_array2_sum(_array), do: err()
+  def complex32_array3_sum(_array), do: err()
+  def complex32_array4_sum(_array), do: err()
+  def complex32_array5_sum(_array), do: err()
+  def complex32_array6_sum(_array), do: err()
+  # %% END:GENERATED:array_unary_operations %%
+
+  # Don't edit the lines below, they are automatically generated
+  # %% BEGIN:GENERATED:array_axis %%
+  def float64_array1_invert_axis(_array, _axis), do: err()
+  def float64_array2_invert_axis(_array, _axis), do: err()
+  def float64_array3_invert_axis(_array, _axis), do: err()
+  def float64_array4_invert_axis(_array, _axis), do: err()
+  def float64_array5_invert_axis(_array, _axis), do: err()
+  def float64_array6_invert_axis(_array, _axis), do: err()
+
+  def complex64_array1_invert_axis(_array, _axis), do: err()
+  def complex64_array2_invert_axis(_array, _axis), do: err()
+  def complex64_array3_invert_axis(_array, _axis), do: err()
+  def complex64_array4_invert_axis(_array, _axis), do: err()
+  def complex64_array5_invert_axis(_array, _axis), do: err()
+  def complex64_array6_invert_axis(_array, _axis), do: err()
+  def float32_array1_invert_axis(_array, _axis), do: err()
+  def float32_array2_invert_axis(_array, _axis), do: err()
+  def float32_array3_invert_axis(_array, _axis), do: err()
+  def float32_array4_invert_axis(_array, _axis), do: err()
+  def float32_array5_invert_axis(_array, _axis), do: err()
+  def float32_array6_invert_axis(_array, _axis), do: err()
+
+  def complex32_array1_invert_axis(_array, _axis), do: err()
+  def complex32_array2_invert_axis(_array, _axis), do: err()
+  def complex32_array3_invert_axis(_array, _axis), do: err()
+  def complex32_array4_invert_axis(_array, _axis), do: err()
+  def complex32_array5_invert_axis(_array, _axis), do: err()
+  def complex32_array6_invert_axis(_array, _axis), do: err()
+  # %% END:GENERATED:array_axis %%
+
+  # Don't edit the lines below, they are automatically generated
   # %% BEGIN:GENERATED:array_builders %%
   def complex64_array1_zeros(_n1), do: err()
   def complex64_array1_ones(_n1), do: err()
@@ -2011,16 +2077,22 @@ defmodule SciEx.SciExNif do
   def complex64_array6_zeros(_n1, _n2, _n3, _n4, _n5, _n6), do: err()
   def complex64_array6_ones(_n1, _n2, _n3, _n4, _n5, _n6), do: err()
 
+  def float64_array1_from_list(_vec), do: err()
   def float64_array1_zeros(_n1), do: err()
   def float64_array1_ones(_n1), do: err()
+  def float64_array2_from_list(_vec, _n1, _n2), do: err()
   def float64_array2_zeros(_n1, _n2), do: err()
   def float64_array2_ones(_n1, _n2), do: err()
+  def float64_array3_from_list(_vec, _n1, _n2, _n3), do: err()
   def float64_array3_zeros(_n1, _n2, _n3), do: err()
   def float64_array3_ones(_n1, _n2, _n3), do: err()
+  def float64_array4_from_list(_vec, _n1, _n2, _n3, _n4), do: err()
   def float64_array4_zeros(_n1, _n2, _n3, _n4), do: err()
   def float64_array4_ones(_n1, _n2, _n3, _n4), do: err()
+  def float64_array5_from_list(_vec, _n1, _n2, _n3, _n4, _n5), do: err()
   def float64_array5_zeros(_n1, _n2, _n3, _n4, _n5), do: err()
   def float64_array5_ones(_n1, _n2, _n3, _n4, _n5), do: err()
+  def float64_array6_from_list(_vec, _n1, _n2, _n3, _n4, _n5, _n6), do: err()
   def float64_array6_zeros(_n1, _n2, _n3, _n4, _n5, _n6), do: err()
   def float64_array6_ones(_n1, _n2, _n3, _n4, _n5, _n6), do: err()
 
@@ -2037,16 +2109,22 @@ defmodule SciEx.SciExNif do
   def complex32_array6_zeros(_n1, _n2, _n3, _n4, _n5, _n6), do: err()
   def complex32_array6_ones(_n1, _n2, _n3, _n4, _n5, _n6), do: err()
 
+  def float32_array1_from_list(_vec), do: err()
   def float32_array1_zeros(_n1), do: err()
   def float32_array1_ones(_n1), do: err()
+  def float32_array2_from_list(_vec, _n1, _n2), do: err()
   def float32_array2_zeros(_n1, _n2), do: err()
   def float32_array2_ones(_n1, _n2), do: err()
+  def float32_array3_from_list(_vec, _n1, _n2, _n3), do: err()
   def float32_array3_zeros(_n1, _n2, _n3), do: err()
   def float32_array3_ones(_n1, _n2, _n3), do: err()
+  def float32_array4_from_list(_vec, _n1, _n2, _n3, _n4), do: err()
   def float32_array4_zeros(_n1, _n2, _n3, _n4), do: err()
   def float32_array4_ones(_n1, _n2, _n3, _n4), do: err()
+  def float32_array5_from_list(_vec, _n1, _n2, _n3, _n4, _n5), do: err()
   def float32_array5_zeros(_n1, _n2, _n3, _n4, _n5), do: err()
   def float32_array5_ones(_n1, _n2, _n3, _n4, _n5), do: err()
+  def float32_array6_from_list(_vec, _n1, _n2, _n3, _n4, _n5, _n6), do: err()
   def float32_array6_zeros(_n1, _n2, _n3, _n4, _n5, _n6), do: err()
   def float32_array6_ones(_n1, _n2, _n3, _n4, _n5, _n6), do: err()
 
@@ -2059,7 +2137,12 @@ defmodule SciEx.SciExNif do
   def float32_array1_logspace(_base, _start, _stop, _n), do: err()
   # %% END:GENERATED:array_builders %%
 
+  # Don't edit the lines below, they are automatically generated
   # %% BEGIN:GENERATED:array_binary_operations %%
+  def complex64_matrix_matrix(_a, _b), do: err()
+  def complex32_matrix_matrix(_a, _b), do: err()
+  def float64_matrix_matrix(_a, _b), do: err()
+  def float32_matrix_matrix(_a, _b), do: err()
   def complex64_add_array1_array1(_a, _b), do: err()
   def complex64_add_array1_scalar(_a, _b), do: err()
   def complex64_add_scalar_array1(_a, _b), do: err()

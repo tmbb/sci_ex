@@ -3,10 +3,12 @@ defmodule SciEx do
   Documentation for `SciEx`.
   """
 
+  alias SciEx.SciExNif
+
   @type parallelization_strategy() ::
-              :always_parallel
-              | :never_parallel
-              | {:size_cutoff, integer()}
+          :always_parallel
+          | :never_parallel
+          | {:size_cutoff, integer()}
 
   @type options() :: [parallel: parallelization_strategy()]
 
@@ -48,17 +50,280 @@ defmodule SciEx do
   import SciEx.ComplexArrayHelpers
   import SciEx.BinaryOperations
 
+  require SciEx.ArrayHelpers, as: ArrayHelpers
+
   alias SciEx.FloatArrayHelpers
   alias SciEx.Types
+  alias SciEx.SciExNif
+
+  alias SciEx.{Float32, Float64, Complex32, Complex64}
+
+  @doc """
+  Tests whether the value is a floating point array.
+  """
+  defguard is_float_array(array)
+           when is_struct(array, Float32.Array1) or
+                  is_struct(array, Float32.Array2) or
+                  is_struct(array, Float32.Array3) or
+                  is_struct(array, Float32.Array4) or
+                  is_struct(array, Float32.Array5) or
+                  is_struct(array, Float32.Array6) or
+                  is_struct(array, Float64.Array1) or
+                  is_struct(array, Float64.Array2) or
+                  is_struct(array, Float64.Array3) or
+                  is_struct(array, Float64.Array4) or
+                  is_struct(array, Float64.Array5) or
+                  is_struct(array, Float64.Array6)
+
+  @doc """
+  Tests whether the value is a complex array.
+  """
+  defguard is_complex_array(array)
+           when is_struct(array, Complex32.Array1) or
+                  is_struct(array, Complex32.Array2) or
+                  is_struct(array, Complex32.Array3) or
+                  is_struct(array, Complex32.Array4) or
+                  is_struct(array, Complex32.Array5) or
+                  is_struct(array, Complex32.Array6) or
+                  is_struct(array, Complex64.Array1) or
+                  is_struct(array, Complex64.Array2) or
+                  is_struct(array, Complex64.Array3) or
+                  is_struct(array, Complex64.Array4) or
+                  is_struct(array, Complex64.Array5) or
+                  is_struct(array, Complex64.Array6)
+
+  @doc """
+  Tests whether the value is 2D array.
+  """
+  defguard is_2d_array(array)
+           when is_struct(array, Float32.Array2) or
+                  is_struct(array, Float64.Array2) or
+                  is_struct(array, Complex32.Array2) or
+                  is_struct(array, Complex64.Array2)
+
+  @doc """
+  Tests whether the value is an array.
+  """
+  defguard is_array(array) when is_float_array(array) or is_complex_array(array)
+
+  @doc """
+  Tests whether two arrays are equal.
+  """
+  def equal?(a, b) do
+    ArrayHelpers.dimension_aware_function(:equal?, a, b, {Kernel, :==})
+  end
+
+  @doc """
+  Tests whether two arrays are equal.
+  """
+  def not_equal?(a, b) do
+    ArrayHelpers.dimension_aware_function(:not_equal?, a, b, {Kernel, :!=})
+  end
+
+  @doc """
+  Tests whether no elements with the same index are equal in both arrays.
+  """
+  def all_not_equal?(a, b) do
+    ArrayHelpers.dimension_aware_function(:all_not_equal?, a, b)
+  end
+
+  @doc """
+  Tests whether the absolute value of every element in `a` is less than
+  the absolute value of every element in `b` with the same index.
+  """
+  def all_absolute_values_greater_than?(a, b) do
+    ArrayHelpers.dimension_aware_function(:all_absolute_values_greater_than?, a, b)
+  end
+
+  @doc """
+  Tests whether the absolute value of every element in `a` is less than
+  or equal to the absolute value of every element in `b` with the same index.
+  """
+  def all_absolute_values_greater_than_or_equal?(a, b) do
+    ArrayHelpers.dimension_aware_function(:all_absolute_values_greater_than_or_equal?, a, b)
+  end
+
+  @doc """
+  Tests whether the absolute value of every element in `a` is less
+  than the absolute value of every element in `b` with the same index.
+  """
+  def all_absolute_values_less_than?(a, b) do
+    ArrayHelpers.dimension_aware_function(:all_absolute_values_less_than?, a, b)
+  end
+
+  @doc """
+  Tests whether the absolute value of every element in `a` is greater than
+  or equal to the absolute value every element in `b` with the same index.
+  """
+  def all_absolute_values_less_than_or_equal?(a, b) do
+    ArrayHelpers.dimension_aware_function(:all_absolute_values_less_than_or_equal?, a, b)
+  end
+
+  @doc """
+  Dot product of two matrices
+  """
+  @spec dot(Types.matrix(), Types.matrix()) :: Types.matrix()
+  def dot(a, b) do
+    case {a, b} do
+      {%Float32.Array2{}, %Float32.Array2{}} ->
+        SciExNif.float32_matrix_matrix(a, b)
+
+      {%Float64.Array2{}, %Float64.Array2{}} ->
+        SciExNif.float64_matrix_matrix(a, b)
+
+      {%Complex32.Array2{}, %Complex32.Array2{}} ->
+        SciExNif.float32_matrix_matrix(a, b)
+
+      {%Complex64.Array2{}, %Complex64.Array2{}} ->
+        SciExNif.float64_matrix_matrix(a, b)
+    end
+  end
+
+  @doc """
+  Transpose a 2D array, interpreted as a matrix.
+
+  Works on both float and complex arrays.
+  """
+  @spec transpose(Types.matrix()) :: Types.matrix()
+  def transpose(array2) when is_2d_array(array2) do
+    case array2 do
+      %Float32.Array2{} -> Float32.Array2.transpose(array2)
+      %Float64.Array2{} -> Float64.Array2.transpose(array2)
+      %Complex32.Array2{} -> Complex32.Array2.transpose(array2)
+      %Complex64.Array2{} -> Complex64.Array2.transpose(array2)
+    end
+  end
+
+  @doc """
+  Sum the values of the array.
+  """
+  @spec sum(Types.array()) :: Types.float_or_complex_number()
+  def sum(array) when is_float_array(array) do
+    case array do
+      # 32-bit
+      %Float32.Array1{} -> SciExNif.float32_array1_sum(array)
+      %Float32.Array2{} -> SciExNif.float32_array2_sum(array)
+      %Float32.Array3{} -> SciExNif.float32_array3_sum(array)
+      %Float32.Array4{} -> SciExNif.float32_array4_sum(array)
+      %Float32.Array5{} -> SciExNif.float32_array5_sum(array)
+      %Float32.Array6{} -> SciExNif.float32_array6_sum(array)
+      # 64-bit
+      %Float64.Array1{} -> SciExNif.float64_array1_sum(array)
+      %Float64.Array2{} -> SciExNif.float64_array2_sum(array)
+      %Float64.Array3{} -> SciExNif.float64_array3_sum(array)
+      %Float64.Array4{} -> SciExNif.float64_array4_sum(array)
+      %Float64.Array5{} -> SciExNif.float64_array5_sum(array)
+      %Float64.Array6{} -> SciExNif.float64_array6_sum(array)
+      # 32-bit
+      %Complex32.Array1{} -> SciExNif.float32_array1_sum(array)
+      %Complex32.Array2{} -> SciExNif.float32_array2_sum(array)
+      %Complex32.Array3{} -> SciExNif.float32_array3_sum(array)
+      %Complex32.Array4{} -> SciExNif.float32_array4_sum(array)
+      %Complex32.Array5{} -> SciExNif.float32_array5_sum(array)
+      %Complex32.Array6{} -> SciExNif.float32_array6_sum(array)
+      # 64-bit
+      %Complex64.Array1{} -> SciExNif.float64_array1_sum(array)
+      %Complex64.Array2{} -> SciExNif.float64_array2_sum(array)
+      %Complex64.Array3{} -> SciExNif.float64_array3_sum(array)
+      %Complex64.Array4{} -> SciExNif.float64_array4_sum(array)
+      %Complex64.Array5{} -> SciExNif.float64_array5_sum(array)
+      %Complex64.Array6{} -> SciExNif.float64_array6_sum(array)
+    end
+  end
+
+  def invert_axis(array, axis) when is_array(array) do
+    case {array, axis} do
+      # 32-bit floats
+      {%Float32.Array1{}, axis} when axis in [0] ->
+        SciExNif.float32_array1_invert_axis(array, axis)
+
+      {%Float32.Array2{}, axis} when axis in [0, 1] ->
+        SciExNif.float32_array2_invert_axis(array, axis)
+
+      {%Float32.Array3{}, axis} when axis in [0, 1, 2] ->
+        SciExNif.float32_array3_invert_axis(array, axis)
+
+      {%Float32.Array4{}, axis} when axis in [0, 1, 2, 3] ->
+        SciExNif.float32_array4_invert_axis(array, axis)
+
+      {%Float32.Array5{}, axis} when axis in [0, 1, 2, 3, 4] ->
+        SciExNif.float32_array5_invert_axis(array, axis)
+
+      {%Float32.Array6{}, axis} when axis in [0, 1, 2, 3, 4, 5] ->
+        SciExNif.float32_array6_invert_axis(array, axis)
+
+      # 64-bit floats
+      {%Float64.Array1{}, axis} when axis in [0] ->
+        SciExNif.float64_array1_invert_axis(array, axis)
+
+      {%Float64.Array2{}, axis} when axis in [0, 1] ->
+        SciExNif.float64_array2_invert_axis(array, axis)
+
+      {%Float64.Array3{}, axis} when axis in [0, 1, 2] ->
+        SciExNif.float64_array3_invert_axis(array, axis)
+
+      {%Float64.Array4{}, axis} when axis in [0, 1, 2, 3] ->
+        SciExNif.float64_array4_invert_axis(array, axis)
+
+      {%Float64.Array5{}, axis} when axis in [0, 1, 2, 3, 4] ->
+        SciExNif.float64_array5_invert_axis(array, axis)
+
+      {%Float64.Array6{}, axis} when axis in [0, 1, 2, 3, 4, 5] ->
+        SciExNif.float64_array6_invert_axis(array, axis)
+
+      # # 32-bit complex numbers
+      # {%Complex32.Array1{}, axis} when axis in [0] ->
+      #   SciExNif.complex32_array1_invert_axis(array, axis)
+
+      # {%Complex32.Array2{}, axis} when axis in [0, 1] ->
+      #   SciExNif.complex32_array2_invert_axis(array, axis)
+
+      # {%Complex32.Array3{}, axis} when axis in [0, 1, 2] ->
+      #   SciExNif.complex32_array3_invert_axis(array, axis)
+
+      # {%Complex32.Array4{}, axis} when axis in [0, 1, 2, 3] ->
+      #   SciExNif.complex32_array4_invert_axis(array, axis)
+
+      # {%Complex32.Array5{}, axis} when axis in [0, 1, 2, 3, 4] ->
+      #   SciExNif.complex32_array5_invert_axis(array, axis)
+
+      # {%Complex32.Array6{}, axis} when axis in [0, 1, 2, 3, 4, 5] ->
+      #   SciExNif.complex32_array6_invert_axis(array, axis)
+
+      # # 64-bit complex numbers
+      # {%Complex64.Array1{}, axis} when axis in [0] ->
+      #   SciExNif.complex64_array1_invert_axis(array, axis)
+
+      # {%Complex64.Array2{}, axis} when axis in [0, 1] ->
+      #   SciExNif.complex64_array1_invert_axis(array, axis)
+
+      # {%Complex64.Array3{}, axis} when axis in [0, 1, 2] ->
+      #   SciExNif.complex64_array1_invert_axis(array, axis)
+
+      # {%Complex64.Array4{}, axis} when axis in [0, 1, 2, 3] ->
+      #   SciExNif.complex64_array1_invert_axis(array, axis)
+
+      # {%Complex64.Array5{}, axis} when axis in [0, 1, 2, 3, 4] ->
+      #   SciExNif.complex64_array1_invert_axis(array, axis)
+
+      # {%Complex64.Array6{}, axis} when axis in [0, 1, 2, 3, 4, 5] ->
+      #   SciExNif.complex64_array1_invert_axis(array, axis)
+
+      _other ->
+        raise "Invalid axis for array."
+    end
+  end
 
   @doc """
   Elementwise maximum of array.
   """
+  @spec max(Types.float_array()) :: Types.float_value()
   def max(array), do: FloatArrayHelpers.max(array)
 
   @doc """
   Elementwise minimum of array.
   """
+  @spec min(Types.float_array()) :: Types.float_value()
   def min(array), do: FloatArrayHelpers.min(array)
 
   @doc """
@@ -414,8 +679,8 @@ defmodule SciEx do
 
   #{@unspecified_precision_message}
   """
-  @spec cube_root(Types.float_value(), options()) :: Types.float_value()
-  defvectorized1(:cube_root, :cbrt, x, [x], prefix: "math")
+  @spec cube_root(Types.float_value(), options()) :: Types.numeric_value()
+  defvectorized1(:cube_root, :cbrt, x, [x], prefix: "math", complex: true)
 
   @doc """
   TODO

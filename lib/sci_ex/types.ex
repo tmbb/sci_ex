@@ -7,7 +7,7 @@ defmodule SciEx.Types do
   alias SciEx.Float32
 
   @typedoc """
-  An array (1D through 6D) of floating point values.
+  An array of floating point or complex values.
   """
   @type float_array() ::
           Float64.Array1.t()
@@ -22,6 +22,36 @@ defmodule SciEx.Types do
           | Float32.Array4.t()
           | Float32.Array5.t()
           | Float32.Array6.t()
+
+
+  @typedoc """
+  An array (1D through 6D) of floating point values.
+  """
+  @type array() ::
+          Float64.Array1.t()
+          | Float64.Array2.t()
+          | Float64.Array3.t()
+          | Float64.Array4.t()
+          | Float64.Array5.t()
+          | Float64.Array6.t()
+          | Float32.Array1.t()
+          | Float32.Array2.t()
+          | Float32.Array3.t()
+          | Float32.Array4.t()
+          | Float32.Array5.t()
+          | Float32.Array6.t()
+          | Complex64.Array1.t()
+          | Complex64.Array2.t()
+          | Complex64.Array3.t()
+          | Complex64.Array4.t()
+          | Complex64.Array5.t()
+          | Complex64.Array6.t()
+          | Complex32.Array1.t()
+          | Complex32.Array2.t()
+          | Complex32.Array3.t()
+          | Complex32.Array4.t()
+          | Complex32.Array5.t()
+          | Complex32.Array6.t()
 
   @typedoc """
   An array (1D through 6D) of complex values.
@@ -40,10 +70,21 @@ defmodule SciEx.Types do
           | Complex32.Array5.t()
           | Complex32.Array6.t()
 
+  @type matrix() ::
+          Float32.Array2.t()
+          | Float64.Array2.t()
+          | Complex32.Array2.t()
+          | Complex64.Array2.t()
+
   @typedoc """
-  Scalar value representing a complex number
+  Scalar value representing a complex number.
   """
   @type complex_number() :: Complex32.t() | Complex64.t()
+
+  @typedoc """
+  Scalar value representing a complex or real number.
+  """
+  @type float_or_complex_number() :: number() | complex_number()
 
   @typedoc """
   Values that can used in operations with floating point arrays

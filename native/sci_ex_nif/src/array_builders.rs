@@ -20,8 +20,22 @@ pub fn float32_array1_zeros(n1: usize) -> ExFloat32Array1 {
 }
 
 #[rustler::nif]
+pub fn float32_array1_from_list(vec: Vec<f32>) -> ExFloat32Array1 {
+    let array1: Array1<f32> = Array1::from_vec(vec);
+    ExFloat32Array1::new(array1)
+}
+
+
+#[rustler::nif]
 pub fn float32_array2_zeros(n1: usize, n2: usize) -> ExFloat32Array2 {
     ExFloat32Array2::new(Array2::zeros((n1, n2)))
+}
+
+#[rustler::nif]
+pub fn float32_array2_from_list(vec: Vec<f32>, n1: usize, n2: usize) -> ExFloat32Array2 {
+    let array1: Array1<f32> = Array1::from_vec(vec);
+    let array2: Array2<f32> = array1.into_shape_with_order((n1, n2)).unwrap();
+    ExFloat32Array2::new(array2)
 }
 
 #[rustler::nif]
@@ -30,8 +44,22 @@ pub fn float32_array3_zeros(n1: usize, n2: usize, n3: usize) -> ExFloat32Array3 
 }
 
 #[rustler::nif]
+pub fn float32_array3_from_list(vec: Vec<f32>, n1: usize, n2: usize, n3: usize) -> ExFloat32Array3 {
+    let array1: Array1<f32> = Array1::from_vec(vec);
+    let array3: Array3<f32> = array1.into_shape_with_order((n1, n2, n3)).unwrap();
+    ExFloat32Array3::new(array3)
+}
+
+#[rustler::nif]
 pub fn float32_array4_zeros(n1: usize, n2: usize, n3: usize, n4: usize) -> ExFloat32Array4 {
     ExFloat32Array4::new(Array4::zeros((n1, n2, n3, n4)))
+}
+
+#[rustler::nif]
+pub fn float32_array4_from_list(vec: Vec<f32>, n1: usize, n2: usize, n3: usize, n4: usize) -> ExFloat32Array4 {
+    let array1: Array1<f32> = Array1::from_vec(vec);
+    let array4: Array4<f32> = array1.into_shape_with_order((n1, n2, n3, n4)).unwrap();
+    ExFloat32Array4::new(array4)
 }
 
 #[rustler::nif]
@@ -40,8 +68,22 @@ pub fn float32_array5_zeros(n1: usize, n2: usize, n3: usize, n4: usize, n5: usiz
 }
 
 #[rustler::nif]
+pub fn float32_array5_from_list(vec: Vec<f32>, n1: usize, n2: usize, n3: usize, n4: usize, n5: usize) -> ExFloat32Array5 {
+    let array1: Array1<f32> = Array1::from_vec(vec);
+    let array5: Array5<f32> = array1.into_shape_with_order((n1, n2, n3, n4, n5)).unwrap();
+    ExFloat32Array5::new(array5)
+}
+
+#[rustler::nif]
 pub fn float32_array6_zeros(n1: usize, n2: usize, n3: usize, n4: usize, n5: usize, n6: usize) -> ExFloat32Array6 {
     ExFloat32Array6::new(Array6::zeros((n1, n2, n3, n4, n5, n6)))
+}
+
+#[rustler::nif]
+pub fn float32_array6_from_list(vec: Vec<f32>, n1: usize, n2: usize, n3: usize, n4: usize, n5: usize, n6: usize) -> ExFloat32Array6 {
+    let array1: Array1<f32> = Array1::from_vec(vec);
+    let array6: Array6<f32> = array1.into_shape_with_order((n1, n2, n3, n4, n5, n6)).unwrap();
+    ExFloat32Array6::new(array6)
 }
 
 
@@ -83,8 +125,22 @@ pub fn float64_array1_zeros(n1: usize) -> ExFloat64Array1 {
 }
 
 #[rustler::nif]
+pub fn float64_array1_from_list(vec: Vec<f64>) -> ExFloat64Array1 {
+    let array1: Array1<f64> = Array1::from_vec(vec);
+    ExFloat64Array1::new(array1)
+}
+
+
+#[rustler::nif]
 pub fn float64_array2_zeros(n1: usize, n2: usize) -> ExFloat64Array2 {
     ExFloat64Array2::new(Array2::zeros((n1, n2)))
+}
+
+#[rustler::nif]
+pub fn float64_array2_from_list(vec: Vec<f64>, n1: usize, n2: usize) -> ExFloat64Array2 {
+    let array1: Array1<f64> = Array1::from_vec(vec);
+    let array2: Array2<f64> = array1.into_shape_with_order((n1, n2)).unwrap();
+    ExFloat64Array2::new(array2)
 }
 
 #[rustler::nif]
@@ -93,8 +149,22 @@ pub fn float64_array3_zeros(n1: usize, n2: usize, n3: usize) -> ExFloat64Array3 
 }
 
 #[rustler::nif]
+pub fn float64_array3_from_list(vec: Vec<f64>, n1: usize, n2: usize, n3: usize) -> ExFloat64Array3 {
+    let array1: Array1<f64> = Array1::from_vec(vec);
+    let array3: Array3<f64> = array1.into_shape_with_order((n1, n2, n3)).unwrap();
+    ExFloat64Array3::new(array3)
+}
+
+#[rustler::nif]
 pub fn float64_array4_zeros(n1: usize, n2: usize, n3: usize, n4: usize) -> ExFloat64Array4 {
     ExFloat64Array4::new(Array4::zeros((n1, n2, n3, n4)))
+}
+
+#[rustler::nif]
+pub fn float64_array4_from_list(vec: Vec<f64>, n1: usize, n2: usize, n3: usize, n4: usize) -> ExFloat64Array4 {
+    let array1: Array1<f64> = Array1::from_vec(vec);
+    let array4: Array4<f64> = array1.into_shape_with_order((n1, n2, n3, n4)).unwrap();
+    ExFloat64Array4::new(array4)
 }
 
 #[rustler::nif]
@@ -103,8 +173,22 @@ pub fn float64_array5_zeros(n1: usize, n2: usize, n3: usize, n4: usize, n5: usiz
 }
 
 #[rustler::nif]
+pub fn float64_array5_from_list(vec: Vec<f64>, n1: usize, n2: usize, n3: usize, n4: usize, n5: usize) -> ExFloat64Array5 {
+    let array1: Array1<f64> = Array1::from_vec(vec);
+    let array5: Array5<f64> = array1.into_shape_with_order((n1, n2, n3, n4, n5)).unwrap();
+    ExFloat64Array5::new(array5)
+}
+
+#[rustler::nif]
 pub fn float64_array6_zeros(n1: usize, n2: usize, n3: usize, n4: usize, n5: usize, n6: usize) -> ExFloat64Array6 {
     ExFloat64Array6::new(Array6::zeros((n1, n2, n3, n4, n5, n6)))
+}
+
+#[rustler::nif]
+pub fn float64_array6_from_list(vec: Vec<f64>, n1: usize, n2: usize, n3: usize, n4: usize, n5: usize, n6: usize) -> ExFloat64Array6 {
+    let array1: Array1<f64> = Array1::from_vec(vec);
+    let array6: Array6<f64> = array1.into_shape_with_order((n1, n2, n3, n4, n5, n6)).unwrap();
+    ExFloat64Array6::new(array6)
 }
 
 

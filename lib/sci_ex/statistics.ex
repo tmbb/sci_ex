@@ -5,6 +5,7 @@ defmodule SciEx.Statistics do
   alias SciEx.RustOption
 
   def kde(array, opts \\ []) do
+    density_estimator = Keyword.get(opts, :estimator, :botev_diffusion)
     limits = Keyword.get(opts, :limits, [])
     lower = RustOption.fetch(limits, :lower)
     upper = RustOption.fetch(limits, :upper)
@@ -13,7 +14,7 @@ defmodule SciEx.Statistics do
 
     case array do
       %Float64.Array1{} ->
-        SciExNif.kde_float64_eval(array, 512, :botev_diffusion, rust_limits)
+        SciExNif.kde_float64_eval(array, 512, density_estimator, rust_limits)
     end
   end
 end

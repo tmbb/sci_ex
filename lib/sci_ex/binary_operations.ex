@@ -116,7 +116,7 @@ defmodule SciEx.BinaryOperations do
       end
 
       @doc """
-      Operator `#{unquote(op)}`, which is equivalente to the `SciEx.#{unquote(ex_op)}/2` function.
+      Operator `#{unquote(op)}`, which is equivalent to the `SciEx.#{unquote(ex_op)}/2` function.
       """
       @spec unquote(op)(SciEx.Types.float_value(), SciEx.Types.float_value()) ::
               SciEx.Types.float_value()

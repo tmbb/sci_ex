@@ -330,8 +330,8 @@
 
 #     replace_in_file(
 #       "lib/sci_ex/sci_ex_nif.ex",
-#       "  # %% BEGIN:GENERATED:float_array_comparisons %%",
-#       "  # %% END:GENERATED:float_array_comparisons %%",
+#       "  # %% BEGIN:GENERATED:array_comparisons %%",
+#       "  # %% END:GENERATED:array_comparisons %%",
 #       sci_nif_ex
 #     )
 #   end

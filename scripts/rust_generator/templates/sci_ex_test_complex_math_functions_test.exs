@@ -12,27 +12,27 @@ defmodule SciExTest.Complex<%= @bits %>.MathFunctionsTest do
         dims = Enum.intersperse(for _ <- 1..n_dim do to_string(m) end, ", ") %>
 
   test "<%= f.ex_function %> function works on <%= n_dim %>D array (sequential)" do
-    x = Array<%= n_dim %>.ones(<%= dims %>)
+    z = Array<%= n_dim %>.ones(<%= dims %>)
     assert %Array<%= n_dim %>{} = SciEx.<%= f.rs_function %>(<%= args %>, parallel: :never_parallel)
   end
 
   test "<%= f.ex_function %> function works on <%= n_dim %>D array (parallel)" do
-    x = Array<%= n_dim %>.ones(<%= dims %>)
+    z = Array<%= n_dim %>.ones(<%= dims %>)
     assert %Array<%= n_dim %>{} = SciEx.<%= f.rs_function %>(<%= args %>, parallel: :never_parallel)
   end
 
   test "<%= f.ex_function %> function works on <%= n_dim %>D array (parallelization cutoff; not parallel)" do
-    x = Array<%= n_dim %>.ones(<%= dims %>)
+    z = Array<%= n_dim %>.ones(<%= dims %>)
     assert %Array<%= n_dim %>{} = SciEx.<%= f.rs_function %>(<%= args %>, parallel: {:size_cutoff, 2000})
   end
 
   test "<%= f.ex_function %> function works on <%= n_dim %>D array (parallelization cutoff; parallel)" do
-    x = Array<%= n_dim %>.ones(<%= dims %>)
+    z = Array<%= n_dim %>.ones(<%= dims %>)
     assert %Array<%= n_dim %>{} = SciEx.<%= f.rs_function %>(<%= args %>, parallel: {:size_cutoff, 100})
   end
 
   test "<%= f.ex_function %> function works on <%= n_dim %>D array (default parallelization strategy)" do
-    x = Array<%= n_dim %>.ones(<%= dims %>)
+    z = Array<%= n_dim %>.ones(<%= dims %>)
     assert %Array<%= n_dim %>{} = SciEx.<%= f.rs_function %>(<%= args %>)
   end<% end %><% end %>
 end

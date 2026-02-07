@@ -7,6 +7,17 @@
 use crate::datatypes::*;
 
 // =========================================
+// Matrix operations
+// =========================================
+<%= for {typ_low, typ_upper} <- [{"float", "Float"}, {"complex", "Complex"}], bits <- [64, 32] do %>
+#[rustler::nif]
+pub fn <%= typ_low %><%= bits %>_matrix_matrix(a: Ex<%= typ_upper %><%= bits %>Array2, b: Ex<%= typ_upper %><%= bits %>Array2) -> Ex<%= typ_upper %><%= bits %>Array2 {
+  let product = a.resource.0.dot(&b.resource.0);
+  Ex<%= typ_upper %><%= bits %>Array2::new(product)
+}
+<% end %>
+
+// =========================================
 // Real numbers
 // =========================================
 <%= for bits <- [64, 32], {op_name, op_symbol} <- @operations, n_dim <- 1..6 do %>
